@@ -25,5 +25,9 @@ urlpatterns = [
 	##ex: http://127.0.0.1:8000
 	url(r'^$', views.main, name='main'),
 	url(r'^contacts/', views.contacts, name='contacts'),
-	url('^', include('django.contrib.auth.urls'))
+	url('^', include('django.contrib.auth.urls')),
+	## ex: /events/5/
+    url(r'^events/(?P<event_id>[0-9]+)/$', views.event, name='event'),
+	## ex: /events/
+	url(r'^events/',  views.events, name='events'),
 ]
