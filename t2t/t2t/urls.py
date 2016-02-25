@@ -15,11 +15,19 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.views.generic.edit import CreateView
+from django.contrib.auth.forms import UserCreationForm
 
 from . import views
 
 urlpatterns = [
     ##wnat to include main page here:
+	url('^register/', CreateView.as_view(
+            template_name='register.html',
+            form_class=UserCreationForm,
+            success_url='/'
+	), name="register"),
+    url('^accounts/', include('django.contrib.auth.urls')),
 	url(r'^polls/', include('polls.urls')),
     url(r'^admin/', admin.site.urls),
 	##ex: http://127.0.0.1:8000

@@ -34,10 +34,10 @@
       <div class="header clearfix">
         <nav>
           <ul class="nav nav-pills pull-right">
-            <li role="presentation"><a href="../../">Главная</a></li>
-			<li role="presentation"><a href="../../events">События</a></li>
-            <li role="presentation"><a href="#">Войти</a></li>
-            <li role="presentation"><a href="../../contacts">Контакты</a></li>
+            <li role="presentation"><a href="{% url 'main' %}">Главная</a></li>
+			<li role="presentation"><a href="{% url 'events' %}">События</a></li>
+            <li role="presentation"><a href="{% url 'register' %}">Войти</a></li>
+            <li role="presentation"><a href="{% url 'contacts' %}">Контакты</a></li>
           </ul>
         </nav>
         <h3 class="text-muted">Time 2 Test</h3>
