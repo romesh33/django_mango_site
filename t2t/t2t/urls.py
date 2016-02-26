@@ -22,11 +22,6 @@ from . import views
 
 urlpatterns = [
     ##wnat to include main page here:
-	url('^register/', CreateView.as_view(
-            template_name='register.html',
-            form_class=UserCreationForm,
-            success_url='/'
-	), name="register"),
     url('^accounts/', include('django.contrib.auth.urls')),
 	url(r'^polls/', include('polls.urls')),
     url(r'^admin/', admin.site.urls),
@@ -39,4 +34,6 @@ urlpatterns = [
     url(r'^events/(?P<pk>[0-9]+)/$', views.DetailView.as_view(), name='event'),
 	## ex: /events/
 	url(r'^events/',  views.events, name='events'),
+	url(r'^register/$', views.register, name='register'), # ADD NEW PATTERN!
+	url(r'^login/$', views.user_login, name='login'),
 ]

@@ -27,17 +27,32 @@
           <ul class="nav nav-pills pull-right">
             <li role="presentation"><a href="{% url 'main' %}">Главная</a></li>
 			<li role="presentation"><a href="{% url 'events' %}">События</a></li>
-            <li role="presentation"><a href="{% url 'register' %}">Регистрация</a></li>
-            <li role="presentation" class="active"><a href="#">Контакты</a></li>
+            <li role="presentation" class="active"><a href="#">Регистрация</a></li>
+            <li role="presentation"><a href="{% url 'contacts' %}">Контакты</a></li>
 			<li role="presentation"><a href="#">Войти</a></li>
           </ul>
         </nav>
         <h3 class="text-muted">Time 2 Test</h3>
       </div>
 
-      <div class="jumbotron">
-        <h1>С нами можно связаться:</h1>
-        <p class="lead">Напишите письмо!</p>
+      <div>
+        {% if registered %}
+			<strong>Спасибо за регистрацию!</strong> <br />
+			<a href="{% url 'main' %}">Вернуться на главную</a><br />
+        {% else %}
+			<form id="user_form" method="post" action="{% url 'register' %}"
+                enctype="multipart/form-data">
+            {% csrf_token %}
+            <!-- Display each form. The as_p method wraps each element in a paragraph
+                 (<p>) element. This ensures each element appears on a new line,
+                 making everything look neater. -->
+            {{ user_form.as_p }}
+            {{ profile_form.as_p }}
+
+            <!-- Provide a button to click to submit the form. -->
+            <input type="submit" name="submit" value="Register" />
+        </form>
+        {% endif %}
       </div>
 
       <footer class="footer">
