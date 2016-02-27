@@ -36,17 +36,25 @@
           <ul class="nav nav-pills pull-right">
             <li role="presentation" class="active"><a href="#">Главная</a></li>
 			<li role="presentation"><a href="{% url 'events' %}">События</a></li>
-            <li role="presentation"><a href="{% url 'register' %}">Регистрация</a></li>
             <li role="presentation"><a href="{% url 'contacts' %}">Контакты</a></li>
-			<li role="presentation"><a href="{% url 'login' %}">Войти</a></li>
+			{% if user.is_authenticated %}
+				<li role="presentation"><a href="{% url 'logout' %}">Выйти</a></li>
+			{% else %}
+				<li role="presentation"><a href="{% url 'register' %}">Регистрация</a></li>
+				<li role="presentation"><a href="{% url 'login' %}">Войти</a></li>
+			{% endif %}
           </ul>
         </nav>
-        <h3 class="text-muted">Time 2 Test</h3>
+        <h3 class="text-muted">Testing events</h3>
       </div>
       <div class="jumbotron">
-        <h1>Welcome!</h1>
+		{% if user.is_authenticated %}
+			<h1>Welcome, {{ user.username }}!</h1>
+		{% else %}
+			<h1>Welcome!</h1>
+		{% endif %}
         <p class="lead">Пусть вас не смущает серый фон, он будет другим, как только я найду место в Bootstrap шаблоне, где это можно сделать.</p>
-        <p><a class="btn btn-lg btn-success" href="#" role="button">Регистрация</a></p>
+        <p><a class="btn btn-lg btn-success" href="{% url 'register' %}" role="button">Регистрация</a></p>
       </div>
 
       <footer class="footer">

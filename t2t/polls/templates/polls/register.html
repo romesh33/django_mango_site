@@ -27,18 +27,17 @@
           <ul class="nav nav-pills pull-right">
             <li role="presentation"><a href="{% url 'main' %}">Главная</a></li>
 			<li role="presentation"><a href="{% url 'events' %}">События</a></li>
-            <li role="presentation" class="active"><a href="#">Регистрация</a></li>
             <li role="presentation"><a href="{% url 'contacts' %}">Контакты</a></li>
-			<li role="presentation"><a href="#">Войти</a></li>
+			<li role="presentation"  class="active"><a href="#">Регистрация</a></li>
+			<li role="presentation"><a href="{% url 'login' %}">Войти</a></li>
           </ul>
         </nav>
-        <h3 class="text-muted">Time 2 Test</h3>
+        <h3 class="text-muted">Testing events</h3>
       </div>
 
       <div>
         {% if registered %}
 			<strong>Спасибо за регистрацию!</strong> <br />
-			<a href="{% url 'main' %}">Вернуться на главную</a><br />
         {% else %}
 			<form id="user_form" method="post" action="{% url 'register' %}"
                 enctype="multipart/form-data">
