@@ -14,19 +14,19 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 
 def main(request):
-    return render(request, 'polls/jumbotron.html', {})	
+    return render(request, 'jumbotron.html', {})	
 def contacts(request):
-    return render(request, 'polls/contacts.html', {})
+    return render(request, 'contacts.html', {})
 def events(request):
 	next_events_list = Event.objects.order_by('-start_time')
 	context = {"next_events_list":next_events_list}
-	return render(request, 'polls/events.html', context)
+	return render(request, 'events.html', context)
 #def event(request, event_id):
 #	event = get_object_or_404(Event, pk=event_id)
 #	return render(request, 'polls/event.html', {'event': event})
 class DetailView(generic.DetailView):
     model = Event
-    template_name = 'polls/event.html'
+    template_name = 'event.html'
 
 def register(request):
     # Like before, get the request's context.
@@ -84,7 +84,7 @@ def register(request):
 
     # Render the template depending on the context.
     return render(request,
-            'polls/register.html',
+            'register.html',
             {'user_form': user_form, 'profile_form': profile_form, 'registered': registered})
 			
 def user_login(request):
@@ -117,14 +117,14 @@ def user_login(request):
                 return HttpResponse("Your account is disabled.")
         else:
             # Bad login details were provided. So we can't log the user in.
-            return render(request,'polls/login.html', {'wrong_details': True})
+            return render(request,'login.html', {'wrong_details': True})
 
     # The request is not a HTTP POST, so display the login form.
     # This scenario would most likely be a HTTP GET.
     else:
         # No context variables to pass to the template system, hence the
         # blank dictionary object...
-        return render(request,'polls/login.html', {'wrong_details': False})
+        return render(request,'login.html', {'wrong_details': False})
 		
 # Use the login_required() decorator to ensure only those logged in can access the view.
 @login_required

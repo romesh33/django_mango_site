@@ -1,9 +1,0 @@
-{% if next_events_list %}
-	<ul>Here are the nearest events you can attend:
-	{% for event in next_events_list %}
-		<li><a href="{% url 't2t:event' event.id %}">{{ event.event_name }}</a></li>
-	{% endfor %}
-	</ul>
-	{% else %}
-		<p>No events are available.</p>
-	{% endif %}
