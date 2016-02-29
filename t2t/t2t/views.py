@@ -6,27 +6,27 @@ from polls.forms import UserForm, UserProfileForm
 from polls.models import Event
 from django.views import generic
 from django.template import RequestContext
+from django.core.urlresolvers import reverse
 
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponseRedirect, HttpResponse
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 
 def main(request):
-    return render(request, 'polls/jumbotron.html', {})	
+    return render(request, 'jumbotron.html', {})	
 def contacts(request):
-    return render(request, 'polls/contacts.html', {})
+    return render(request, 'contacts.html', {})
 def events(request):
 	next_events_list = Event.objects.order_by('-start_time')
 	context = {"next_events_list":next_events_list}
-	return render(request, 'polls/events.html', context)
+	return render(request, 'events.html', context)
 #def event(request, event_id):
 #	event = get_object_or_404(Event, pk=event_id)
 #	return render(request, 'polls/event.html', {'event': event})
 class DetailView(generic.DetailView):
     model = Event
-    template_name = 'polls/event.html'
-
-def login(request):
-    return render(request, 'polls/login1.html', {})
+    template_name = 'event.html'
 
 def register(request):
     # Like before, get the request's context.
@@ -84,7 +84,7 @@ def register(request):
 
     # Render the template depending on the context.
     return render(request,
-            'polls/register.html',
+            'register.html',
             {'user_form': user_form, 'profile_form': profile_form, 'registered': registered})
 			
 def user_login(request):
@@ -101,7 +101,7 @@ def user_login(request):
         # Use Django's machinery to attempt to see if the username/password
         # combination is valid - a User object is returned if it is.
         user = authenticate(username=username, password=password)
-
+		
         # If we have a User object, the details are correct.
         # If None (Python's way of representing the absence of a value), no user
         # with matching credentials was found.
@@ -111,18 +111,25 @@ def user_login(request):
                 # If the account is valid and active, we can log the user in.
                 # We'll send the user back to the homepage.
                 login(request, user)
-                return HttpResponseRedirect('/rango/')
+                return HttpResponseRedirect(reverse('main'))
             else:
                 # An inactive account was used - no logging in!
                 return HttpResponse("Your account is disabled.")
         else:
             # Bad login details were provided. So we can't log the user in.
-            print("Invalid login details: {0}, {1}").format(username, password)
-            return HttpResponse("Invalid login details supplied.")
+            return render(request,'login.html', {'wrong_details': True})
 
     # The request is not a HTTP POST, so display the login form.
     # This scenario would most likely be a HTTP GET.
     else:
         # No context variables to pass to the template system, hence the
         # blank dictionary object...
-        return render_to_response('polls/login.html', {}, context)
+        return render(request,'login.html', {'wrong_details': False})
+		
+# Use the login_required() decorator to ensure only those logged in can access the view.
+@login_required
+def user_logout(request):
+    # Since we know the user is logged in, we can now just log them out.
+    logout(request)
+    # Take the user back to the homepage.
+    return HttpResponseRedirect(reverse('main'))
