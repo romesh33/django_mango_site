@@ -67,7 +67,7 @@ ROOT_URLCONF = 't2t.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates',],
+        'DIRS': ['templates',os.path.join(PROJECT_ROOT, "templates"),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -79,10 +79,6 @@ TEMPLATES = [
         },
     },
 ]
-
-TEMPLATE_DIRS = (
-    os.path.join(PROJECT_ROOT, "templates"),
-)
 
 WSGI_APPLICATION = 't2t.wsgi.application'
 

@@ -16,6 +16,7 @@ from .models import Thread, Message
 
 from .utils import json_response, send_message
 
+
 def send_message_view(request):
     if not request.method == "POST":
         return HttpResponse("Please use POST.")
@@ -54,15 +55,16 @@ def send_message_view(request):
         thread.participants.add(request.user, recipient)
 
     send_message(
-                    thread.id,
-                    request.user.id,
-                    message_text,
-                    request.user.username
-                )
+        thread.id,
+        request.user.id,
+        message_text,
+        request.user.username
+    )
 
     return HttpResponseRedirect(
         reverse('privatemessages.views.messages_view')
     )
+
 
 @csrf_exempt
 def send_message_api_view(request, thread_id):
@@ -93,12 +95,13 @@ def send_message_api_view(request, thread_id):
         return json_response({"error": "The message is too long."})
 
     send_message(
-                    thread.id,
-                    sender.id,
-                    message_text
-                )
+        thread.id,
+        sender.id,
+        message_text
+    )
 
     return json_response({"status": "ok"})
+
 
 def messages_view(request):
     if not request.user.is_authenticated():
@@ -130,6 +133,7 @@ def messages_view(request):
                                   "threads": threads,
                               },
                               context_instance=RequestContext(request))
+
 
 def chat_view(request, thread_id):
     if not request.user.is_authenticated():
@@ -167,7 +171,7 @@ def chat_view(request, thread_id):
     else:
         messages_sent = 0
 
-    messages_received = messages_total-messages_sent
+    messages_received = messages_total - messages_sent
 
     partner = thread.participants.exclude(id=request.user.id)[0]
 
