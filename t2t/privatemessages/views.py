@@ -175,9 +175,9 @@ def chat_view(request, thread_id):
 
     partner = thread.participants.exclude(id=request.user.id)[0]
 
-    tz = request.COOKIES.get("timezone")
-    if tz:
-        timezone.activate(tz)
+    #tz = request.COOKIES.get("timezone")
+    #if tz:
+    #    timezone.activate(tz)
 
     return render_to_response('chat.html',
                               {
