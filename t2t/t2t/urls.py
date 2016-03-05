@@ -22,7 +22,6 @@ from . import views
 
 urlpatterns = [
     ##wnat to include main page here:
-    url(r'^messages/', include('privatemessages.urls')),
     url(r'^polls/', include('polls.urls')),
     url(r'^admin/', admin.site.urls),
     ##ex: http://127.0.0.1:8000

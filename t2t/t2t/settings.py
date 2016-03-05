@@ -37,7 +37,6 @@ SEND_MESSAGE_API_URL = 'http://127.0.0.1:8000/messages/send_message_api'
 # Application definition
 
 INSTALLED_APPS = [
-    'privatemessages.apps.PrivatemessagesConfig',
     'polls.apps.PollsConfig',
 	'django.contrib.admin',
     'django.contrib.auth',
