@@ -15,8 +15,6 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
@@ -30,10 +28,6 @@ ALLOWED_HOSTS = []
 
 SESSION_ENGINE = 'redis_sessions.session'
 
-API_KEY = '$0m3-U/\/1qu3-K3Y'
-
-SEND_MESSAGE_API_URL = 'http://127.0.0.1:8000/messages/send_message_api'
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -45,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 ]
+
+WEBSOCKET_URL = '/ws/'
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
@@ -62,7 +58,7 @@ ROOT_URLCONF = 't2t.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['templates',os.path.join(PROJECT_ROOT, "templates"),],
+        'DIRS': ['templates',],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -76,7 +72,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 't2t.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
