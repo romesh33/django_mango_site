@@ -50,11 +50,12 @@
       <div class="jumbotron">
 		{% if user.is_authenticated %}
 			<h1>Welcome, {{ user.username }}!</h1>
-		{% else %}
+            <p class="lead">Пусть вас не смущает серый фон, он будет другим, как только я найду место в Bootstrap шаблоне, где это можно сделать.</p>
+          {% else %}
 			<h1>Welcome!</h1>
+            <p class="lead">Пусть вас не смущает серый фон, он будет другим, как только я найду место в Bootstrap шаблоне, где это можно сделать.</p>
+            <p><a class="btn btn-lg btn-success" href="{% url 'register' %}" role="button">Регистрация</a></p>
 		{% endif %}
-        <p class="lead">Пусть вас не смущает серый фон, он будет другим, как только я найду место в Bootstrap шаблоне, где это можно сделать.</p>
-        <p><a class="btn btn-lg btn-success" href="{% url 'register' %}" role="button">Регистрация</a></p>
       </div>
 
       <footer class="footer">
