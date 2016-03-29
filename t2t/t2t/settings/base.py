@@ -15,7 +15,6 @@ import os
 # into your settings, but ImproperlyConfigured is an exception.
 from django.core.exceptions import ImproperlyConfigured
 
-
 def get_env_variable(var_name):
     """Get the environment variable or return exception."""
     try:
@@ -63,6 +62,8 @@ MIDDLEWARE_CLASSES = [
 
 ROOT_URLCONF = 't2t.urls'
 
+# Note that for global templates I defined "'DIRS': ['templates', ]", but the option to look for app-specific
+#   templates (APP_DIRS) is also enabled
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -115,4 +116,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
+# This path is used inside some app - to find static files:
 STATIC_URL = '/static/'
+
+# Additionally to STATIC_URL, I'm using path below to set global static files used by all apps:
+# You can launch python manage.py shell --settings=t2t.settings.local,
+#   then import STATICFILES_DIRS from t2t.settings.base, then show it's value - to check the path
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static")
+]
+
+# this path is used by default in decorator @login_required:
+#   tried to set the relative view in form { url 'login' } - no luck :(
+LOGIN_URL = '/login/'

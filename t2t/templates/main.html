@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}33 тестера - Главная страница{% endblock %}
+
+{% load static from staticfiles %}
+{% block logo %}<img class="logo" src="{% static "img/logo_33_testers_13_03.png" %}">{% endblock logo %}
+
+{% block navigation %}
+    <div class="row">
+        <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <nav>
+                    <ul class="nav nav-pills pull-left">
+			        {% if user.is_authenticated %}
+                        <span>Вы вошли как {{ user.username }}.</span>
+                        <li role="presentation"><a href="{% url 'logout' %}">Выйти</a></li>
+			        {% else %}
+				        <li role="presentation"><a href="{% url 'register' %}">Регистрация</a></li>
+				        <li role="presentation"><a href="{% url 'login' %}">Войти</a></li>
+			        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            <div class="col-sm-4"></div>
+    </div>
+{% endblock navigation %}
+
+{% block section_title %}
+{% endblock section_title %}
+
+{% block content %}
+<div>
+		{% if next_events_list %}
+            <table>
+                <caption>Следующие события:</caption>
+                <th>Событие</th>
+                <th>Время</th>
+                <th>Макс число участников</th>
+                <th>Число зарег участников</th>
+                <th>Кнопки</th>
+                    {% for event in next_events_list %}
+				        <tr>
+                            <td><a href="{% url 'event' event.id %}">{{ event.event_name }}</a></td>
+                            <td>{{ event.start_time }} - {{ event.end_time }}</td>
+                            <td>{{ event.max_participants_number }}</td>
+                            <td>{{ event.current_participants_number }}</td>
+                            <td>
+                                {% if user.is_authenticated %}
+                                    {% if event not in registered_event_list %}
+                                        <a href="{% url 'add_participant' event.id %}">Участвовать</a>
+                                    {% else %}
+                                        <a href="{% url 'delete_participant' event.id %}">Не участвовать</a>
+                                    {% endif %}
+                                {% else %}
+                                        <a href="{% url 'add_participant' event.id %}">Участвовать</a>
+                                {% endif %}
+                            </td>
+                            <td><a href="#">Следить</a>/<a href="#">Не следить</a></td>
+                        </tr>
+			        {% endfor %}
+            </table>
+        {% else %}
+            <p>No events are available.</p>
+        {% endif %}
+</div>
+
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+  Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="0" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        12345
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+
