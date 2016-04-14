@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     't2t',
     'events.apps.EventsConfig',
     'polls.apps.PollsConfig',
+    'cabinet.apps.CabinetConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

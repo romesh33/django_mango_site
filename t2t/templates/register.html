@@ -21,6 +21,9 @@
     </div>
 {% endblock %}
 
+{% block section_title %}
+{% endblock section_title %}
+
 {% block content %}
 <div>
         {% if registered %}
@@ -36,8 +39,8 @@
             {{ profile_form.as_p }}
 
             <!-- Provide a button to click to submit the form. -->
-            <input type="submit" name="submit" value="Register" />
-        </form>
+            <input type="submit" name="submit" value="Зарегистрироваться" />
+            </form>
         {% endif %}
 </div>
 {% endblock %}

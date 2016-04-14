@@ -12,7 +12,7 @@
                 <nav>
                     <ul class="nav nav-pills pull-left">
 			        {% if user.is_authenticated %}
-                        <span>Вы вошли как {{ user.username }}.</span>
+                        <span>Вы вошли как <a href="{% url 'view_cabinet' user.id %}">{{ user.username }}</a>.</span>
                         <li role="presentation"><a href="{% url 'logout' %}">Выйти</a></li>
 			        {% else %}
 				        <li role="presentation"><a href="{% url 'register' %}">Регистрация</a></li>
@@ -62,30 +62,6 @@
         {% else %}
             <p>No events are available.</p>
         {% endif %}
-</div>
-
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-  Launch demo modal
-</button>
-
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="0" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-      </div>
-      <div class="modal-body">
-        12345
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
 </div>
 {% endblock %}
 

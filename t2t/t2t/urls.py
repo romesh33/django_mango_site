@@ -25,9 +25,10 @@ urlpatterns = [
     url(r'^polls/', include('polls.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^events/', include('events.urls')),
+    url(r'^cabinet/', include('cabinet.urls')),
     ##ex: http://127.0.0.1:8000
     url(r'^$', views.main, name='main'),
-    url(r'^contacts/', views.contacts, name='contacts'),
+    url(r'^contacts/$', views.contacts, name='contacts'),
     url(r'^register/$', views.register, name='register'),  # ADD NEW PATTERN!
     url(r'^login/$', views.user_login, name='login'),
     url(r'^logout/$', views.user_logout, name='logout'),

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Личный кабинет{% endblock %}
+
+{% block navigation %}
+    <div class="row">
+        <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <nav>
+                    <ul class="nav nav-pills pull-left">
+			        {% if user.is_authenticated %}
+                        <li role="presentation"><a href="{% url 'logout' %}">Выйти</a></li>
+			        {% else %}
+				        <li role="presentation" class="active"><a href="#">Регистрация</a></li>
+				        <li role="presentation"><a href="{% url 'login' %}">Войти</a></li>
+			        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            <div class="col-sm-4"></div>
+    </div>
+{% endblock %}
+
+{% block section_title %}
+Личный кабинет пользователя {{ user.username }}
+{% endblock section_title %}
+
+{% block content %}
+{% load staticfiles %}
+<div>
+        {% if user.is_authenticated %}
+            Имя пользователя: {{ user.username }}<br>
+            {% if userprofile != 0 %}
+                {% if userprofile.picture != 0 %}
+                    Путь к изображению пользователя: {{ userprofile.picture.name }}<br>
+                    <img height=200px width=200px src="{% static userprofile.picture.name %}">
+                {% else %}
+                    <b>У пользователя нет картинки профиля.</b>
+                {% endif %}
+            {% else %}
+                Профиль пользователя не создан.<br>
+            {% endif %}
+            <br>
+            <a href="{% url 'edit_profile' user.id %}">Редактировать профиль пользователя</a>
+        {% endif %}
+</div>
+{% endblock %}

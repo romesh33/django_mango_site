@@ -14,18 +14,20 @@ from django.contrib.auth.decorators import login_required
 
 from events.models import Event
 
+
 def main(request):
     next_events_list = Event.objects.order_by('-start_time')
     if request.user.is_authenticated():
         # I'll prepare the list of events in which user participates if user is logged in:
         user = request.user
-        registered_event_list = Event.objects.filter(users = user)
+        registered_event_list = Event.objects.filter(users=user)
     else:
         # Do something for anonymous users.
         registered_event_list = 0
         pass
     context = {"next_events_list": next_events_list, "registered_event_list": registered_event_list}
     return render(request, 'main.html', context)
+
 
 def contacts(request):
     return render(request, 'contacts.html', {})
