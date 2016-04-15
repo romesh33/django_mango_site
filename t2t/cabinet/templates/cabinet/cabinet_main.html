@@ -32,8 +32,8 @@
             Имя пользователя: {{ user.username }}<br>
             {% if userprofile != 0 %}
                 {% if userprofile.picture != 0 %}
-                    Путь к изображению пользователя: {{ userprofile.picture.name }}<br>
-                    <img height=200px width=200px src="{% static userprofile.picture.name %}">
+                    Путь к изображению пользователя: {{ userprofile.picture }}<br>
+                    <img height=200px width=200px src="{{ userprofile.picture|cut:'t2t' }}">
                 {% else %}
                     <b>У пользователя нет картинки профиля.</b>
                 {% endif %}
