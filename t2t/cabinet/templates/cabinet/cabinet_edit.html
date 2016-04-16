@@ -29,7 +29,7 @@
 {% load staticfiles %}
 <div>
         {% if user.is_authenticated %}
-            <form id="user_form" method="post" action="{% url 'edit_profile' user.id %}" enctype="multipart/form-data">
+            <form id="user_form" method="post" action="{% url 'cabinet:edit_profile' user.id %}" enctype="multipart/form-data">
                 {% csrf_token %}
                 {{ user_form.non_field_errors }}
                 {{ user_form.username.label }} {{ user_form.username }}<br>

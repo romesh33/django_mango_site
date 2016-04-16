@@ -13,7 +13,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 
 from events.models import Event
-
+import logging
 
 def main(request):
     next_events_list = Event.objects.order_by('-start_time')
@@ -61,6 +61,7 @@ def register(request):
             # Now sort out the UserProfile instance.
             # Since we need to set the user attribute ourselves, we set commit=False.
             # This delays saving the model until we're ready to avoid integrity problems.
+            logging.warning('UserProfile 1')
             profile = profile_form.save(commit=False)
             profile.user = user
 
@@ -68,10 +69,11 @@ def register(request):
             # If so, we need to get it from the input form and put it in the UserProfile model.
             if 'picture' in request.FILES:
                 profile.picture = request.FILES['picture']
-
+            logging.warning('UserProfile 2')
             # Now we save the UserProfile model instance.
             profile.save()
 
+            logging.warning('UserProfile 3')
             # Update our variable to tell the template registration was successful.
             registered = True
 

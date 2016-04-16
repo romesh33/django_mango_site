@@ -62,7 +62,7 @@ def editProfile(request, user_id):
                     userProfile.save()
                 else:
                     logging.warning("picture wasn't found in request")
-                return HttpResponseRedirect(reverse('view_cabinet',args=(user.id,)))
+                return HttpResponseRedirect(reverse('cabinet:view_cabinet',args=(user.id,)))
             else:
                 # in case username specified in the POST data - is not the same as logged in user -
                 #   we will render the form with validation error:
@@ -78,7 +78,7 @@ def editProfile(request, user_id):
                     userProfile.save()
                 else:
                     logging.warning("picture wasn't found in request")
-                return HttpResponseRedirect(reverse('view_cabinet',args=(user.id,)))
+                return HttpResponseRedirect(reverse('cabinet:view_cabinet',args=(user.id,)))
             else:
                 print(user_form.errors, profile_form.errors)
     # Not a HTTP POST, so we render our form using two ModelForm instances.

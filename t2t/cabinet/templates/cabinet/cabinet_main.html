@@ -33,7 +33,8 @@
             {% if userprofile != 0 %}
                 {% if userprofile.picture != 0 %}
                     Путь к изображению пользователя: {{ userprofile.picture.name }}<br>
-                    <img height=200px width=200px src="{% static userprofile.picture.name %}">
+                    {% static "userprofile.picture.name" as baseUrl %}
+                    <img height=200px width=200px src="{{ baseUrl }}">
                 {% else %}
                     <b>У пользователя нет картинки профиля.</b>
                 {% endif %}
@@ -41,7 +42,7 @@
                 Профиль пользователя не создан.<br>
             {% endif %}
             <br>
-            <a href="{% url 'edit_profile' user.id %}">Редактировать профиль пользователя</a>
+            <a href="{% url 'cabinet:edit_profile' user.id %}">Редактировать профиль пользователя</a>
         {% endif %}
 </div>
 {% endblock %}

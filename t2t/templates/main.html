@@ -12,7 +12,7 @@
                 <nav>
                     <ul class="nav nav-pills pull-left">
 			        {% if user.is_authenticated %}
-                        <span>Вы вошли как <a href="{% url 'view_cabinet' user.id %}">{{ user.username }}</a>.</span>
+                        <span>Вы вошли как <a href="{% url 'cabinet:view_cabinet' user.id %}">{{ user.username }}</a>.</span>
                         <li role="presentation"><a href="{% url 'logout' %}">Выйти</a></li>
 			        {% else %}
 				        <li role="presentation"><a href="{% url 'register' %}">Регистрация</a></li>
