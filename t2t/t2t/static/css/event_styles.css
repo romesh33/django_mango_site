@@ -1,0 +1,9 @@
+div#chat_window {
+  border: 1px Solid Gray;
+  background-color: Yellow;
+  height: 400px;
+}
+
+div#actions {
+  font-size: 8pt;
+}
