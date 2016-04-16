@@ -40,19 +40,19 @@
                 <th>Кнопки</th>
                     {% for event in next_events_list %}
 				        <tr>
-                            <td><a href="{% url 'event' event.id %}">{{ event.event_name }}</a></td>
+                            <td><a href="{% url 'events:event' event.id %}">{{ event.event_name }}</a></td>
                             <td>{{ event.start_time }} - {{ event.end_time }}</td>
                             <td>{{ event.max_participants_number }}</td>
                             <td>{{ event.current_participants_number }}</td>
                             <td>
                                 {% if user.is_authenticated %}
                                     {% if event not in registered_event_list %}
-                                        <a href="{% url 'add_participant' event.id %}">Участвовать</a>
+                                        <a href="{% url 'events:add_participant' event.id %}">Участвовать</a>
                                     {% else %}
-                                        <a href="{% url 'delete_participant' event.id %}">Не участвовать</a>
+                                        <a href="{% url 'events:delete_participant' event.id %}">Не участвовать</a>
                                     {% endif %}
                                 {% else %}
-                                        <a href="{% url 'add_participant' event.id %}">Участвовать</a>
+                                        <a href="{% url 'events:add_participant' event.id %}">Участвовать</a>
                                 {% endif %}
                             </td>
                             <td><a href="#">Следить</a>/<a href="#">Не следить</a></td>
