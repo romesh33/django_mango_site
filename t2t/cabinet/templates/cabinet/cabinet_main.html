@@ -41,7 +41,7 @@
                 Профиль пользователя не создан.<br>
             {% endif %}
             <br>
-            <a href="{% url 'edit_profile' user.id %}">Редактировать профиль пользователя</a>
+            <a href="{% url 'cabinet:edit_profile' user.id %}">Редактировать профиль пользователя</a>
         {% endif %}
 </div>
 {% endblock %}
