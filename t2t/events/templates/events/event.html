@@ -32,6 +32,12 @@
         <div id="chat_window">
             Здесь будут сообщения от пользователей.
         </div>
+        <form id="send_message_form" method="post" action="" enctype="multipart/form-data">
+                <!-- Provide a button to click to submit the form. -->
+                <input name="message_text" id="message_text" type="text" maxlength="1000" height="100px" width="300px">
+                <br>
+                <input type="submit" name="submit" value="Отправить" />
+        </form>
     </div>
     <div class="col-md-2 col-sm-2" id="actions">
         <h4>События</h4>
@@ -39,6 +45,7 @@
         <p>10:15 - Заведен баг №101</p>
         <p>10:16 - Заведен баг №103</p>
         <p>10:16 - Заведен баг №104</p>
+        <a href="{% url 'bugs:addTicket' event.id %}">Завести баг</a>
     </div>
 </div>
 {% endblock %}

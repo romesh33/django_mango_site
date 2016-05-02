@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'events.apps.EventsConfig',
     'polls.apps.PollsConfig',
     'cabinet.apps.CabinetConfig',
+    'bugs.apps.BugsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

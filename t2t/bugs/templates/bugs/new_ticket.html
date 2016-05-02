@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Создание нового тикета{% endblock %}
+
+{% block navigation %}
+    <div class="row">
+        <div class="col-sm-4"></div>
+            <div class="col-sm-4">
+                <nav>
+                    <ul class="nav nav-pills pull-left">
+			        {% if user.is_authenticated %}
+                        <li role="presentation"><a href="{% url 'logout' %}">Выйти</a></li>
+			        {% else %}
+				        <li role="presentation" class="active"><a href="#">Регистрация</a></li>
+				        <li role="presentation"><a href="{% url 'login' %}">Войти</a></li>
+			        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            <div class="col-sm-4"></div>
+    </div>
+{% endblock %}
+
+{% block section_title %}
+Создание нового тикета для события {{ event.id }}
+{% endblock section_title %}
+
+{% block content %}
+{% load staticfiles %}
+<div>
+        {% if user.is_authenticated %}
+            <form id="user_form" method="post" action="{% url 'bugs:addTicket' event.id %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ new_ticket_form.non_field_errors }}
+                {{ new_ticket_form.as_p }}
+                <!-- Provide a button to click to submit the form. -->
+                <input type="submit" name="submit" value="Сохранить" />
+            </form>
+        {% endif %}
+</div>
+{% endblock %}

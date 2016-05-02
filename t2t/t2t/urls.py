@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^events/', include('events.urls')),
     url(r'^cabinet/', include('cabinet.urls')),
+    url(r'^bugs/', include('bugs.urls')),
     ##ex: http://127.0.0.1:8000
     url(r'^$', views.main, name='main'),
     url(r'^contacts/$', views.contacts, name='contacts'),
