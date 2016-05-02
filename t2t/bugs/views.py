@@ -46,7 +46,7 @@ def addTicket(request, event_id):
 
 class TicketView(generic.DetailView):
     model = Ticket
-    template_name = 'bugs/ticket.html'
+    template_name = 'bugs/view_ticket.html'
 
 
 class EventTickets(generic.ListView):

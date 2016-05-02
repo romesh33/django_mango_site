@@ -2,46 +2,26 @@
 
 {% block title %}Личный кабинет{% endblock %}
 
-{% block navigation %}
-    <div class="row">
-        <div class="col-sm-4"></div>
-            <div class="col-sm-4">
-                <nav>
-                    <ul class="nav nav-pills pull-left">
-			        {% if user.is_authenticated %}
-                        <li role="presentation"><a href="{% url 'logout' %}">Выйти</a></li>
-			        {% else %}
-				        <li role="presentation" class="active"><a href="#">Регистрация</a></li>
-				        <li role="presentation"><a href="{% url 'login' %}">Войти</a></li>
-			        {% endif %}
-                    </ul>
-                </nav>
-            </div>
-            <div class="col-sm-4"></div>
-    </div>
-{% endblock %}
-
-{% block section_title %}
-Личный кабинет пользователя {{ user.username }} - Редактирование профиля
-{% endblock section_title %}
-
 {% block content %}
 {% load staticfiles %}
-<div>
-        {% if user.is_authenticated %}
-            <form id="user_form" method="post" action="{% url 'cabinet:edit_profile' user.id %}" enctype="multipart/form-data">
-                {% csrf_token %}
-                {{ user_form.non_field_errors }}
-                {{ user_form.username.label }} {{ user_form.username }}<br>
-                {% if show_unique_username_error %}
-                    {{ user_form.username.errors }} <br>
-                {% endif %}
-                {{ user_form.email.label }} {{ user_form.email }}<br>
-                {{ user_form.email.errors }} <br>
-                {{ profile_form }}
-                <!-- Provide a button to click to submit the form. -->
-                <input type="submit" name="submit" value="Сохранить" />
-            </form>
-        {% endif %}
+<div class="container">
+    <div class="page-header">
+        <h3>Редактирование профиля {{ user.username }}</h3>
+    </div>
+    {% if user.is_authenticated %}
+        <form id="user_form" method="post" action="{% url 'cabinet:edit_profile' user.id %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ user_form.non_field_errors }}
+            {{ user_form.username.label }} {{ user_form.username }}<br>
+            {% if show_unique_username_error %}
+                {{ user_form.username.errors }} <br>
+            {% endif %}
+            {{ user_form.email.label }} {{ user_form.email }}<br>
+            {{ user_form.email.errors }} <br>
+            {{ profile_form }}
+            <!-- Provide a button to click to submit the form. -->
+            <input type="submit" name="submit" value="Сохранить" />
+        </form>
+    {% endif %}
 </div>
 {% endblock %}

@@ -7,45 +7,44 @@
     <link href="{% static "css/event_styles.css" %}" rel="stylesheet">
 {% endblock custom_static %}
 
-{% block title %}Событие{% endblock %}
-
-{% block section_title %}
-    <div class="container">
-        {{ event.event_name }}
-    </div>
-{% endblock section_title %}
+{% block title %}{{ event.event_name }}{% endblock %}
 
 {% block content %}
 <div class="container">
-    {{ event.description }}
-</div>
-<div class="container">
-    <div class="col-md-2 col-sm-2" id="statistics">
-        <h4>Статистика</h4>
-        <p>Ромко - 5</p>
-        <p>Ваня - 10</p>
-        <p>Санька - 15</p>
-        <p>Сергей - 3</p>
-    </div>
-    <div class="col-md-8 col-sm-8" id="chat">
-        <h4>Чат</h4>
-        <div id="chat_window">
-            Здесь будут сообщения от пользователей.
+    <div class="page-header">
+            <h3>{{ event.event_name }}</h3>
         </div>
-        <form id="send_message_form" method="post" action="" enctype="multipart/form-data">
-                <!-- Provide a button to click to submit the form. -->
-                <input name="message_text" id="message_text" type="text" maxlength="1000" height="100px" width="300px">
-                <br>
-                <input type="submit" name="submit" value="Отправить" />
-        </form>
+    <div class="well">
+        {{ event.description }}
     </div>
-    <div class="col-md-2 col-sm-2" id="actions">
-        <h4>События</h4>
-        <p>10:00 - Заведен баг №100</p>
-        <p>10:15 - Заведен баг №101</p>
-        <p>10:16 - Заведен баг №103</p>
-        <p>10:16 - Заведен баг №104</p>
-        <a href="{% url 'bugs:addTicket' event.id %}">Завести баг</a>
+    <div class="row">
+        <div class="col-md-2 col-sm-2" id="statistics">
+            <h4>Статистика</h4>
+            <p>Ромко - 5</p>
+            <p>Ваня - 10</p>
+            <p>Санька - 15</p>
+            <p>Сергей - 3</p>
+        </div>
+        <div class="col-md-8 col-sm-8" id="chat">
+            <h4>Чат</h4>
+            <div id="chat_window">
+                Здесь будут сообщения от пользователей.
+            </div>
+            <form id="send_message_form" method="post" action="" enctype="multipart/form-data">
+                    <!-- Provide a button to click to submit the form. -->
+                    <input name="message_text" id="message_text" type="text" maxlength="1000" height="100px" width="300px">
+                    <br>
+                    <input type="submit" name="submit" value="Отправить" />
+            </form>
+        </div>
+        <div class="col-md-2 col-sm-2" id="actions">
+            <h4>События</h4>
+            <p>10:00 - Заведен баг №100</p>
+            <p>10:15 - Заведен баг №101</p>
+            <p>10:16 - Заведен баг №103</p>
+            <p>10:16 - Заведен баг №104</p>
+            <a href="{% url 'bugs:addTicket' event.id %}">Завести баг</a>
+        </div>
     </div>
 </div>
 {% endblock %}

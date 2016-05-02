@@ -3,44 +3,40 @@
 {% block title %}Регистрация{% endblock %}
 
 {% block navigation %}
-    <div class="row">
-        <div class="col-sm-4"></div>
-            <div class="col-sm-4">
-                <nav>
-                    <ul class="nav nav-pills pull-left">
-			        {% if user.is_authenticated %}
-                        <li role="presentation"><a href="{% url 'logout' %}">Выйти</a></li>
-			        {% else %}
-				        <li role="presentation" class="active"><a href="#">Регистрация</a></li>
-				        <li role="presentation"><a href="{% url 'login' %}">Войти</a></li>
-			        {% endif %}
-                    </ul>
-                </nav>
-            </div>
-            <div class="col-sm-4"></div>
-    </div>
+<div class="navbar-collapse collapse">
+    <ul class="nav navbar-nav navbar-right">
+      <li class="nav active"><a href="#">Регистрация</a></li>
+      <li class="nav"><a href="{% url 'login' %}">Войти</a></li>
+    </ul>
+</div>
 {% endblock %}
 
 {% block section_title %}
 {% endblock section_title %}
 
 {% block content %}
-<div>
-        {% if registered %}
-			<strong>Спасибо за регистрацию!</strong> <br />
-        {% else %}
-			<form id="user_form" method="post" action="{% url 'register' %}"
-                enctype="multipart/form-data">
-            {% csrf_token %}
-            <!-- Display each form. The as_p method wraps each element in a paragraph
-                 (<p>) element. This ensures each element appears on a new line,
-                 making everything look neater. -->
-            {{ user_form.as_p }}
-            {{ profile_form.as_p }}
+<div class="container">
+    <div class="page-header">
+        <h3>Регистрация</h3>
+    </div>
+    {% if registered %}
+        <strong>Спасибо за регистрацию!</strong> <br />
+    {% else %}
+        <form id="user_form" method="post" action="{% url 'register' %}"
+            enctype="multipart/form-data">
+        <div class="form-group">
+        {% csrf_token %}
+        <!-- Display each form. The as_p method wraps each element in a paragraph
+             (<p>) element. This ensures each element appears on a new line,
+             making everything look neater. -->
+        {{ user_form.as_p }}
+        </div>
+        {{ profile_form.as_p }}
 
-            <!-- Provide a button to click to submit the form. -->
-            <input type="submit" name="submit" value="Зарегистрироваться" />
-            </form>
-        {% endif %}
+        <!-- Provide a button to click to submit the form. -->
+        <input type="submit" name="submit" value="Зарегистрироваться" />
+
+        </form>
+    {% endif %}
 </div>
 {% endblock %}

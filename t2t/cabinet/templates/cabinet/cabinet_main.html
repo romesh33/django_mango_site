@@ -2,46 +2,25 @@
 
 {% block title %}Личный кабинет{% endblock %}
 
-{% block navigation %}
-    <div class="row">
-        <div class="col-sm-4"></div>
-            <div class="col-sm-4">
-                <nav>
-                    <ul class="nav nav-pills pull-left">
-			        {% if user.is_authenticated %}
-                        <li role="presentation"><a href="{% url 'logout' %}">Выйти</a></li>
-			        {% else %}
-				        <li role="presentation" class="active"><a href="#">Регистрация</a></li>
-				        <li role="presentation"><a href="{% url 'login' %}">Войти</a></li>
-			        {% endif %}
-                    </ul>
-                </nav>
-            </div>
-            <div class="col-sm-4"></div>
-    </div>
-{% endblock %}
-
-{% block section_title %}
-Личный кабинет пользователя {{ user.username }}
-{% endblock section_title %}
-
 {% block content %}
 {% load staticfiles %}
-<div>
-        {% if user.is_authenticated %}
-            Имя пользователя: {{ user.username }}<br>
-            {% if userprofile != 0 %}
-                {% if userprofile.picture != 0 %}
-                    Путь к изображению пользователя: {{ userprofile.picture }}<br>
-                    <img height=200px width=200px src="{{ userprofile.picture|cut:'t2t' }}">
-                {% else %}
-                    <b>У пользователя нет картинки профиля.</b>
-                {% endif %}
+<div class="container">
+    <div class="page-header">
+        <h3>Личный кабинет {{ user.username }}</h3>
+    </div>
+    {% if user.is_authenticated %}
+        Имя пользователя: {{ user.username }}<br>
+        {% if userprofile != 0 %}
+            {% if userprofile.picture != 0 %}
+                <img class="thumbnail" src="{{ userprofile.picture|cut:'t2t' }}">
             {% else %}
-                Профиль пользователя не создан.<br>
+                <b>У пользователя нет картинки профиля.</b>
             {% endif %}
-            <br>
-            <a href="{% url 'cabinet:edit_profile' user.id %}">Редактировать профиль пользователя</a>
+        {% else %}
+            Профиль пользователя не создан.<br>
         {% endif %}
+        <br>
+        <a href="{% url 'cabinet:edit_profile' user.id %}">Редактировать профиль пользователя</a>
+    {% endif %}
 </div>
 {% endblock %}
