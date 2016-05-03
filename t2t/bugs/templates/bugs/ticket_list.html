@@ -4,6 +4,13 @@
 
 {% block content %}
 <div class="container">
+    <ol class="breadcrumb">
+        <li><a href="{% url 'main' %}">Главная</a></li>
+        <li><a href="{% url 'events:events' %}">События</a></li>
+        <!--TODO: for some reson redirect is not working-->
+        <li><a href="{% url 'events:event' event.id %}">{{ event.event_name }}</a></li>
+        <li class="active">Список тикетов</li>
+    </ol>
     <div class="page-header">
         <h3>Список заведенных тикетов</h3>
     </div>

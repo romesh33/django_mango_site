@@ -20,12 +20,15 @@
     <div class="row">
         <div class="col-md-4">
             {% if user.is_authenticated %}
-                <span id="welcoming-text" class="alert alert-success" role="alert">Вы вошли как <a href="{% url 'cabinet:view_cabinet' user.id %}">
-                    {{ user.username }}</a>.
-                </span>
+                <div id="welcoming-text" class="alert alert-success" role="alert">Вы вошли как <a href="{% url 'cabinet:view_cabinet' user.id %}">
+                    {{ user.username }}</a>
+                </div>
             {% endif %}
         </div>
     </div>
+    <ol class="breadcrumb">
+        <li class="active">Главная</li>
+    </ol>
     <div class="page-header">
         <h3>Следующие события</h3>
     </div>

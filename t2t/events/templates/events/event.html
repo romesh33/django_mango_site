@@ -11,6 +11,11 @@
 
 {% block content %}
 <div class="container">
+    <ol class="breadcrumb">
+        <li><a href="{% url 'main' %}">Главная</a></li>
+        <li><a href="{% url 'events:events' %}">События</a></li>
+        <li class="active">{{ event.event_name }}</li>
+    </ol>
     <div class="page-header">
             <h3>{{ event.event_name }}</h3>
         </div>

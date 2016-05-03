@@ -5,6 +5,12 @@
 {% block content %}
 {% load staticfiles %}
 <div class="container">
+    <ol class="breadcrumb">
+        <li><a href="{% url 'main' %}">Главная</a></li>
+        <li><a href="{% url 'events:events' %}">События</a></li>
+        <li><a href="{% url 'events:event' event.id %}">{{ event.event_name }}</a></li>
+        <li class="active">Новый тикет</li>
+    </ol>
     <div class="page-header">
         <h3>Создание нового тикета для события {{ event.event_name }}</h3>
     </div>

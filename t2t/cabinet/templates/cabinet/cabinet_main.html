@@ -12,7 +12,7 @@
         Имя пользователя: {{ user.username }}<br>
         {% if userprofile != 0 %}
             {% if userprofile.picture != 0 %}
-                <img class="thumbnail" src="{{ userprofile.picture|cut:'t2t' }}">
+                <img class="thumbnail img-responsive" src="{{ userprofile.picture|cut:'t2t' }}">
             {% else %}
                 <b>У пользователя нет картинки профиля.</b>
             {% endif %}
