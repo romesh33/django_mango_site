@@ -23,12 +23,18 @@
         <p style="color:red">Введённые логин или пароль неправильны. Попробуйте еще раз.</p>
     {% endif %}
     <form id="login_form" method="post" action="{% url 'login' %}">
-        {% csrf_token %}
-        Имя пользователя: <input type="text" name="username" value="" size="50" />
-        <br />
-        Пароль: <input type="password" name="password" value="" size="50" />
-        <br />
-        <input type="submit" value="Войти" />
+        <div class="form-group row">
+            <div class="col-md-6">
+                {% csrf_token %}
+                <label for="user_name">Имя пользователя</label>
+                <input type="text" name="username" value="" size="50" class="form-control" id="user_name"
+                       placeholder="Ваше имя"/>
+                <label for="user_password">Пароль</label>
+                <input type="password" name="password" value="" size="50" class="form-control" id="user_password"
+                         placeholder="Ваш пароль"/>
+                <input type="submit" value="Войти" class="btn btn-default"/>
+            </div>
+        </div>
     </form>
 </div>
 {% endblock %}
