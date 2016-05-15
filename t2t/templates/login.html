@@ -20,7 +20,9 @@
         <h3>Войти на сайт</h3>
     </div>
     {% if wrong_details %}
-        <p style="color:red">Введённые логин или пароль неправильны. Попробуйте еще раз.</p>
+        <div class="alert alert-warning" role="alert">
+            <p style="color:red">Введённые логин или пароль неправильны. Попробуйте еще раз.</p>
+        </div>
     {% endif %}
     <form id="login_form" method="post" action="{% url 'login' %}">
         <div class="form-group row">

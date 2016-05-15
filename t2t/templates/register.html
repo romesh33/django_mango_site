@@ -20,23 +20,50 @@
         <h3>Регистрация</h3>
     </div>
     {% if registered %}
-        <strong>Спасибо за регистрацию!</strong> <br />
+        <div class="alert alert-success" role="alert">
+            <p>Спасибо за регистрацию!</p>
+        </div>
     {% else %}
         <form id="user_form" method="post" action="{% url 'register' %}"
             enctype="multipart/form-data">
             <div class="form-group row">
                 <div class="col-md-6">
                     {% csrf_token %}
-                    <!-- Display each form. The as_p method wraps each element in a paragraph
-                    (<p>) element. This ensures each element appears on a new line,
-                    making everything look neater. -->
-                    {{ user_form.as_p }}
+                    {% if user_form.non_field_errors %}
+                        <div class="alert alert-warning" role="alert">
+                            <p>{{ user_form.non_field_errors }}</p>
+                        </div>
+                    {% endif %}
+                    {% if user_form.username.errors %}
+                        <div class="alert alert-warning" role="alert">
+                            <p>{{ user_form.username.errors }}</p>
+                        </div>
+                    {% endif %}
+                    <label for="user_name">Имя пользователя</label>
+                    <input type="text" name="username" value="" size="50" class="form-control" id="user_name"
+                       placeholder="Введите имя"/>
+                    {% if user_form.email.errors %}
+                        <div class="alert alert-warning" role="alert">
+                            <p>{{ user_form.email.errors }}</p>
+                        </div>
+                    {% endif %}
+                    <label for="user_email">E-mail</label>
+                    <input type="text" name="email" value="" size="50" class="form-control" id="user_email"
+                       placeholder="Введите e-mail"/>
+                    {% if user_form.email.errors %}
+                        <div class="alert alert-warning" role="alert">
+                            <p>{{ user_form.password.errors }}</p>
+                        </div>
+                    {% endif %}
+                    <label for="user_password">Пароль</label>
+                    <input type="password" name="password" value="" size="50" class="form-control" id="user_password"
+                       placeholder="Введите пароль"/>
                 </div>
             </div>
             <div class="form-group row">
                 <div class="col-md-6">
                     {% csrf_token %}
-                    {{ profile_form.as_p }}
+                    {{ profile_form.picture }}
                 </div>
             </div>
             <!-- Provide a button to click to submit the form. -->

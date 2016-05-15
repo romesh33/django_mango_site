@@ -16,11 +16,36 @@
     </div>
     {% if user.is_authenticated %}
         <form id="user_form" method="post" action="{% url 'bugs:addTicket' event.id %}" enctype="multipart/form-data">
-            {% csrf_token %}
-            {{ new_ticket_form.non_field_errors }}
-            {{ new_ticket_form.as_p }}
-            <!-- Provide a button to click to submit the form. -->
-            <input type="submit" name="submit" value="Сохранить" />
+            <div class="form-group row">
+                {% csrf_token %}
+                {% if new_ticket_form.non_field_errors %}
+                        <div class="alert alert-error" role="alert">
+                            <p>{{ new_ticket_form.non_field_errors }}</p>
+                        </div>
+                {% endif %}
+                {% if new_ticket_form.title.errors %}
+                        <div class="alert alert-error" role="alert">
+                            <p>{{ new_ticket_form.title.errors }}</p>
+                        </div>
+                {% endif %}
+                <label for="title">Саммари</label>
+                <input type="text" name="title" value="{{ new_ticket_form.title.value }}" size="50"
+                           class="form-control" id="title"/>
+                {% if new_ticket_form.description.errors %}
+                        <div class="alert alert-error" role="alert">
+                            <p>{{ new_ticket_form.description.errors }}</p>
+                        </div>
+                {% endif %}
+                <label for="description">Описание</label>
+                <input type="text" name="description" value="{{ new_ticket_form.description.value }}" size="50"
+                           class="form-control" id="description"/>
+                <!--TODO: Also need to hide the word None in the description field - ugly -->
+                <!--TODO: Not sure how to put check box in the bootstrap template -->
+                {{ new_ticket_form.ticket_type }}
+                <br>
+                <!-- Provide a button to click to submit the form. -->
+                <input class="btn btn-default" type="submit" name="submit" value="Сохранить" />
+            </div>
         </form>
     {% endif %}
 </div>

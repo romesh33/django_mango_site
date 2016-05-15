@@ -95,4 +95,5 @@ def editProfile(request, user_id):
         profile_form = UserProfileForm(data)
     context = {"user_form": user_form, "profile_form": profile_form, "show_unique_username_error":
         show_unique_username_error}
+    logging.warning(show_unique_username_error)
     return render(request, 'cabinet/cabinet_edit.html', context)
