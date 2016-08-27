@@ -5,6 +5,12 @@
 {% block content %}
 {% load staticfiles %}
 <div class="container">
+    <ol class="breadcrumb">
+        <li><a href="{% url 'main' %}">Главная</a></li>
+        <li><a href="{% url 'cabinet:view_cabinet' user.id %}">Личный кабинет</a></li>
+        <li><a href="{% url 'mess:view_messages_page'%}">Сообщения</a></li>
+        <li class="active">Новое сообщение</li>
+    </ol>
     <div class="page-header">
         <h3>Новое сообщение от {{ user.username }}</h3>
     </div>

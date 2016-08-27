@@ -1,5 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.views import generic
+from django.db.models import Q
 from django.shortcuts import render, get_object_or_404
 import logging
 from django.contrib.auth.decorators import login_required
@@ -42,5 +43,7 @@ def new_message_page(request):
 class UserMessages(generic.ListView):
     model = Message
     template_name = 'mess/user_messages.html'
-    #queryset = Message.objects.filter(from_user__name=user)
     context_object_name = 'all_user_messages'
+    def get_queryset(self):
+        user = self.request.user
+        return Message.objects.filter(Q(to_user=user)|Q(from_user=user))

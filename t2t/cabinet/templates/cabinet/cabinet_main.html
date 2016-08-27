@@ -5,6 +5,10 @@
 {% block content %}
 {% load staticfiles %}
 <div class="container">
+    <ol class="breadcrumb">
+        <li><a href="{% url 'main' %}">Главная</a></li>
+        <li class="active">Личный кабинет</li>
+    </ol>
     <div class="page-header">
         <h3>Личный кабинет {{ user.username }}</h3>
     </div>
