@@ -23,6 +23,8 @@
         {% endif %}
         <br>
         <a href="{% url 'cabinet:edit_profile' user.id %}">Редактировать профиль пользователя</a>
+        <br>
+        <a href="{% url 'mess:view_messages_page' %}">Сообщения</a>
     {% endif %}
 </div>
 {% endblock %}

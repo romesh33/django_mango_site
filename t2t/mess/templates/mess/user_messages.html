@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Список сообщений{% endblock %}
+
+{% block content %}
+<div class="container">
+    <ol class="breadcrumb">
+        <li><a href="{% url 'main' %}">Главная</a></li>
+        <li><a href="{% url 'cabinet:view_cabinet' user.id %}">Личный кабинет</a></li>
+        <li><a href="{% url 'mess:view_messages_page'%}">Сообщения</a></li>
+        <li class="active">Список сообщений</li>
+    </ol>
+    <div class="page-header">
+        <h3>Список сообщений пользователя</h3>
+    </div>
+    {% load staticfiles %}
+    {% if all_user_messages %}
+        <ul>
+        {% for message in all_user_messages %}
+            <li>{{message.from_user}} -> {{message.to_user}} : {{ message.text }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Нет сообщений</p>
+    {% endif %}
+</div>
+{% endblock content%}

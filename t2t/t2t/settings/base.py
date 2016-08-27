@@ -37,6 +37,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     't2t',
+    'mess.apps.MessConfig',
     'events.apps.EventsConfig',
     'polls.apps.PollsConfig',
     'cabinet.apps.CabinetConfig',

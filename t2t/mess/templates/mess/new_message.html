@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Новое сообщение{% endblock %}
+
+{% block content %}
+{% load staticfiles %}
+<div class="container">
+    <div class="page-header">
+        <h3>Новое сообщение от {{ user.username }}</h3>
+    </div>
+
+    <div class="row">
+    </div>
+    {% if message_status == 1 %}
+        <div class="alert alert-info" role="alert">
+            <p>Сообщение было послано!</p>
+        </div>
+    {% else %}
+        <form id="new_message_form" method="post" action="{% url 'mess:new_message_page' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group row">
+                <div class="col-md-6">
+                    {{ new_message_form }}
+                </div>
+                <input type="submit" name="submit" value="Послать сообщение" class="btn btn-default"/>
+            </div>
+        </form>
+    {% endif %}
+</div>
+{% endblock %}
