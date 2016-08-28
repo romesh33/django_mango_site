@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
 from . import views
-from .views import UserMessages
+from .views import UserMessages, UserThreads
 
 app_name = 'mess'
 urlpatterns = [
@@ -12,7 +12,9 @@ urlpatterns = [
     # ex: /mess/send/
     url(r'^send$', views.new_message_page, name='new_message_page'),
     # ex: /mess/messages/
-    url(r'^messages$', UserMessages.as_view(), name='messages_list')
+    url(r'^messages$', UserMessages.as_view(), name='messages_list'),
+    # ex: /mess/thread/
+    url(r'^thread$', UserThreads.as_view(), name='threads_list')
     # url(r'^(?P<pk>[0-9]+)/$', views.DetailView.as_view(), name='detail'),
     # # ex: /polls/5/results/
     # url(r'^(?P<pk>[0-9]+)/results/$', views.ResultsView.as_view(), name='results'),

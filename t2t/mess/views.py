@@ -5,7 +5,7 @@ from django.shortcuts import render, get_object_or_404
 import logging
 from django.contrib.auth.decorators import login_required
 from .forms import NewMessageForm
-from .models import Message
+from .models import Message, MessageThread
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 
@@ -22,14 +22,11 @@ def new_message_page(request):
         # Attempt to grab information from the raw form information.
         # Note that we make use of both UserForm and UserProfileForm.
         new_message_form = NewMessageForm(data=request.POST)
-        to_user = request.POST['to_user']
-        text = request.POST['text']
         if new_message_form.is_valid():
-            message = Message()
-            message.from_user = user
-            message.to_user = User.objects.get(id=to_user)
-            message.text = text
-            message.save()
+            to_user_id = request.POST['to_user']
+            text = request.POST['text']
+            to_user = User.objects.get(id=to_user_id)
+            message = Message.objects.create_message(from_user=user, to_user=to_user, text=text)
             context = {"new_message_form": new_message_form, "message_status": 1}
             return render(request, 'mess/new_message.html', context)
     # Not a HTTP POST, so we render our form using two ModelForm instances.
@@ -47,3 +44,12 @@ class UserMessages(generic.ListView):
     def get_queryset(self):
         user = self.request.user
         return Message.objects.filter(Q(to_user=user)|Q(from_user=user))
+
+
+class UserThreads(generic.ListView):
+    model = MessageThread
+    template_name = 'mess/user_threads.html'
+    context_object_name = 'all_user_threads'
+    def get_queryset(self):
+        user = self.request.user
+        return MessageThread.objects.filter(users=user)
