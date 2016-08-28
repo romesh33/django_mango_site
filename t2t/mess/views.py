@@ -50,6 +50,17 @@ class UserThreads(generic.ListView):
     model = MessageThread
     template_name = 'mess/user_threads.html'
     context_object_name = 'all_user_threads'
+
     def get_queryset(self):
         user = self.request.user
         return MessageThread.objects.filter(users=user)
+
+    #TODO: need to send to templates: user names for all threads,
+    #                                 along with last messages times for these threads,
+    #                                 and also last message texts
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(UserThreads, self).get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['display_users'] = Book.objects.all()
+        return context
