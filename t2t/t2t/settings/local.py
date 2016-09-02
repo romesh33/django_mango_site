@@ -18,3 +18,10 @@ DATABASES = {
         'PASSWORD': POSTGRES_PASSWORD,
     }
 }
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "asgiref.inmemory.ChannelLayer",
+        "ROUTING": "t2t.routing.channel_routing",
+    },
+}

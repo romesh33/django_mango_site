@@ -14,10 +14,12 @@
         <h3>Список переписок пользователя</h3>
     </div>
     {% load staticfiles %}
-    {% if all_user_threads %}
+    {% if threads_to_display %}
         <ul>
-        {% for thread in all_user_threads %}
-            <li>{{thread.users}} : {{ thread.num_of_messages }}</li>
+        {% for thread in threads_to_display %}
+            <li>{{ thread.1|date:"D d M Y" }} {{ thread.1|time:"H:i" }}: {{ thread.0 }}:  {{ thread.2 }}
+                <a href="{% url 'mess:view_thread' thread.3 %}">Просмотреть</a>
+            </li>
         {% endfor %}
         </ul>
     {% else %}

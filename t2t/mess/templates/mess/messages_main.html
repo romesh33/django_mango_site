@@ -16,7 +16,7 @@
     {% if user.is_authenticated %}
         <a href="{% url 'mess:new_message_page' %}">Отправить сообщение</a><br>
         <a href="{% url 'mess:messages_list' %}">Показать список сообщений</a><br>
-        <a href="{% url 'mess:threads_list' %}">Показать список переписок</a>
+        <a href="{% url 'mess:show_threads' %}">Показать список переписок</a>
     {% endif %}
 </div>
 {% endblock %}

@@ -7,3 +7,9 @@ class NewMessageForm(forms.ModelForm):
     class Meta:
         model = Message
         fields = ('to_user', 'text')
+
+
+class ReplyMessageForm(forms.ModelForm):
+    class Meta:
+        model = Message
+        fields = ('text',)

@@ -80,7 +80,10 @@
         <p>&copy; 2016 Romko United, Inc.</p>
       </footer>
     </div>
-    <script src="{% static "js/jquery-1.12.2.min.js" %}"></script>
-    <script src="{% static "js/bootstrap.min.js" %}"></script>
+    <script src='{% static "js/jquery-1.12.2.min.js" %}'></script>
+    <script src='{% static "js/bootstrap.min.js" %}'></script>
+    {% block more_scripts %}
+
+    {% endblock more_scripts %}
   </body>
 </html>
