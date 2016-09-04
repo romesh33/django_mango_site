@@ -35,7 +35,7 @@ class MessageThread(models.Model):
         result = "Thread between users: "
         if self.users:
             for u in self.users:
-                result = result + u + ","
+                result = result + u.username + ","
             return result
         else:
             return "This thread doesn't have users"
