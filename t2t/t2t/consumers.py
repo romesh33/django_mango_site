@@ -60,9 +60,12 @@ def ws_receive(message):
     for u in thread.users.all():
         if u != from_user:
             to_user = u
-    new_message = Message.objects.create_message(from_user=from_user, to_user=to_user, text=message_text)
-    new_message.creation_time = datetime.datetime.now()
+    thread = MessageThread.objects.get_or_create_thread(from_user=from_user, to_user=to_user)
+    new_message = Message(from_user=from_user, to_user=to_user, text=message_text, thread=thread)
+    new_message.save()
+    thread.last_message_id = new_message.id
     dt = new_message.creation_time
+    #print(dt)
     #print(dt.strftime("%s %s" % ("%Y %m %d", "%H:%M:%S")))
     #creation_time = datetime.strftime("%s %s" % ("%Y %m %d", "%H:%M:%S"))
     #message = Message.objects.create_message(from_user=from_user, to_user=to_user, text=text)
@@ -98,7 +101,7 @@ def ws_receive(message):
     Group('chat-'+thread_id, channel_layer=message.channel_layer).send({'text': json.dumps({"message_text": message_text,
                                                             "from_user": from_user.username,
                                                             "to_user": to_user.username,
-                                                            "creation_time": new_message.creation_time.strftime("%s %s" % ("%a %d %b %Y", "%H:%M"))})})
+                                                            "creation_time": dt.strftime("%s %s" % ("%a %d %b %Y", "%H:%M"))})})
 
 
 @channel_session_user_from_http

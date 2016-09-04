@@ -26,8 +26,17 @@ def new_message_page(request):
             to_user_id = request.POST['to_user']
             text = request.POST['text']
             to_user = User.objects.get(id=to_user_id)
-            message = Message.objects.create_message(from_user=user, to_user=to_user, text=text)
+            thread = MessageThread.objects.get_or_create_thread(from_user=user, to_user=to_user)
+            #print(thread)
+            message = Message(from_user=user, to_user=to_user, text=text, thread=thread)
+            message.save()
+            thread.last_message_id = message.id
+            print(message)
+            # thread = message.thread
+            # print(thread)
+            thread_id = thread.id
             context = {"new_message_form": new_message_form, "message_status": 1}
+            return HttpResponseRedirect(reverse('mess:view_thread', args=(thread_id,)), )
             return render(request, 'mess/new_message.html', context)
     # Not a HTTP POST, so we render our form using two ModelForm instances.
     # These forms will be blank, ready for user input.
@@ -93,6 +102,7 @@ def show_threads(request):
     threads_to_display = []
     #Определям список тредов, в которых участвовал наш юзер:
     user_threads = MessageThread.objects.filter(users=user)
+    print(user_threads)
     #Перебираем список тредов в списке и заполняем список тредов для отображения:
     for user_thread in user_threads:
         if user_thread.num_of_users == 2:
@@ -100,7 +110,7 @@ def show_threads(request):
             for i in users:
                 if i != user:
                     companion = i
-            last_message_id = user_thread.lastMessageId
+            last_message_id = user_thread.last_message_id
             last_message = Message.objects.get(id=last_message_id)
             threads_to_display.append([companion.username,last_message.creation_time,last_message.text, user_thread.id])
             #users = users.exixts(user)
@@ -108,6 +118,6 @@ def show_threads(request):
         else:
             # игнорируем треды, в которых больше двух юзеров - их мы не будем показывать
             pass
-    #print(threads_to_display)
+    print(threads_to_display)
     context = {"threads_to_display": threads_to_display}
     return render(request, 'mess/user_threads.html', context)

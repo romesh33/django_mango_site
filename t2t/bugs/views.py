@@ -6,7 +6,6 @@ from django.shortcuts import get_object_or_404
 import logging
 from django.contrib.auth.models import User
 from events.models import Event
-from bugs.forms import NewTicketForm
 from .models import Ticket
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
