@@ -8,7 +8,6 @@ $(function() {
     chatsock.onmessage = function(message)
     {
         var data = JSON.parse(message.data);
-        //alert("Text:" + data.message_text);
         var chat = $("#chat");
         //var ele = $('<ul></ul>');
         chat.append($("<li></li>").text(data.creation_time + ": " + data.from_user + " ->" + data.to_user + ": "  + data.message_text));

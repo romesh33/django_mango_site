@@ -8,6 +8,8 @@ from django.views.generic import DetailView
 from django.views.generic.edit import UpdateView
 from .models import Event
 from django.contrib.auth.models import User
+from mess.forms import ChatMessageForm
+from mess.models import ChatMessage
 
 # Create your views here.
 def events(request):
@@ -19,6 +21,17 @@ def events(request):
 class EventDetailView(DetailView):
     model = Event
     template_name = 'events/event.html'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super(EventDetailView, self).get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        chat_message_form = ChatMessageForm()
+        event = Event.objects.get(pk=self.object.pk)
+        chat_messages = ChatMessage.objects.filter(event=event)
+        context['chat_message_form'] = chat_message_form
+        context['chat_messages'] = chat_messages
+        return context
 
 @login_required
 def addParticipant(request, event_id):

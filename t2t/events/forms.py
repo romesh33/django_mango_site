@@ -1,4 +1,4 @@
-from .models import Message, ChatMessage
+from .models import Message
 from django.contrib.auth.models import User
 from django import forms
 
@@ -12,10 +12,4 @@ class NewMessageForm(forms.ModelForm):
 class ReplyMessageForm(forms.ModelForm):
     class Meta:
         model = Message
-        fields = ('text',)
-
-
-class ChatMessageForm(forms.ModelForm):
-    class Meta:
-        model = ChatMessage
         fields = ('text',)

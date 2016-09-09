@@ -14,7 +14,7 @@ urlpatterns = [
     # ex: /mess/messages/
     url(r'^messages$', UserMessages.as_view(), name='messages_list'),
     # ex: /mess/threads/
-    url(r'^threads$', views.show_threads, name='show_threads'),
+    url(r'^threads/$', views.show_threads, name='show_threads'),
     # ex: /mess/threads/5/
     url(r'^threads/(?P<thread_id>[0-9]+)/$', views.view_thread, name='view_thread'),
     # ex: /mess/threads/5/reply

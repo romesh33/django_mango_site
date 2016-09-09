@@ -31,13 +31,13 @@ def new_message_page(request):
             message = Message(from_user=user, to_user=to_user, text=text, thread=thread)
             message.save()
             thread.last_message_id = message.id
-            print(message)
+            #print(message)
             # thread = message.thread
             # print(thread)
             thread_id = thread.id
             context = {"new_message_form": new_message_form, "message_status": 1}
             return HttpResponseRedirect(reverse('mess:view_thread', args=(thread_id,)), )
-            return render(request, 'mess/new_message.html', context)
+            #return render(request, 'mess/new_message.html', context)
     # Not a HTTP POST, so we render our form using two ModelForm instances.
     # These forms will be blank, ready for user input.
     else:
@@ -59,11 +59,21 @@ class UserMessages(generic.ListView):
 def view_thread(request, thread_id):
     user = request.user
     thread_current = get_object_or_404(MessageThread,pk=thread_id)
+    thread_users = thread_current.users.all()
+    #print(thread_users)
+    for u in thread_users:
+        print(u.username)
+        if u != user:
+            companion_name = u.username
+            break
+    #print(companion_name)
     if thread_current.users.filter(username=user.username).exists():
+        # если юзер хочет просмотреть переписку, в которой состоит - пожалуйста:
         messages = Message.objects.filter(thread=thread_current)
-        context = {"thread_messages": messages}
+        context = {"thread_messages": messages, "companion_name": companion_name}
     else:
-        context = {"thread_messages": None}
+        # если юзер хочет посмотреть переписку, в которой не состоит - получает фигу:
+        context = {"thread_messages": None, "companion_name": companion_name}
     reply_message_form = ReplyMessageForm()
     context["reply_message_form"] = reply_message_form
     context["thread_id"] = thread_id
@@ -102,7 +112,7 @@ def show_threads(request):
     threads_to_display = []
     #Определям список тредов, в которых участвовал наш юзер:
     user_threads = MessageThread.objects.filter(users=user)
-    print(user_threads)
+    #print(user_threads)
     #Перебираем список тредов в списке и заполняем список тредов для отображения:
     for user_thread in user_threads:
         if user_thread.num_of_users == 2:
@@ -118,6 +128,6 @@ def show_threads(request):
         else:
             # игнорируем треды, в которых больше двух юзеров - их мы не будем показывать
             pass
-    print(threads_to_display)
+    #print(threads_to_display)
     context = {"threads_to_display": threads_to_display}
     return render(request, 'mess/user_threads.html', context)
