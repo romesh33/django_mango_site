@@ -19,7 +19,10 @@ $(function() {
             // сюда мы должны попасть, если посылаем сообщение из функции consumers, которая посылает сообщение в ответ на
             // подключение вебсокета:
             var users_connected = $("#connected_users").text();
-            users_connected = users_connected + "," + data.user_connected;
+            console.log("users_connected length = " + users_connected.length)
+            if (users_connected.length > 0) users_connected = users_connected + "," + data.user_connected;
+            else users_connected = data.user_connected
+
             $("#connected_users").text(users_connected);
         }
 //        else if (data.user_connected != null)
