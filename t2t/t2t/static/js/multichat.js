@@ -3,6 +3,7 @@ $(function() {
     var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
     var path = ws_scheme + '://' + window.location.host + "/chat" + window.location.pathname;
     var chatsock = new ReconnectingWebSocket(path);
+    var inc = 0;
 
     chatsock.onmessage = function(message)
     {
@@ -11,6 +12,14 @@ $(function() {
         if (data.message_text != null)
         {
             // сюда мы попадаем, когда посылаем сообщение из consumers:
+            var NewSuperComponent = React.createClass({
+                render: function() {
+                    return <div>I'm the new div returned by react!</div>;
+                }
+            });
+            inc = inc + 1;
+            console.log("rendering should happen i = " + inc);
+            ReactDOM.render(<NewSuperComponent name="Roman"/>, document.getElementById('chat_new_messages'));
             if ($("#empty_chat_message").length) $("#empty_chat_message").hide();
             chat.append($("<p></p>").text(data.creation_time + ": " + data.sender + ": " + data.message_text));
         }
