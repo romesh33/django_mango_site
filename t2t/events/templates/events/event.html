@@ -28,9 +28,6 @@
     <div class="well">
         {{ event.description }}
     </div>
-    <div id="root">
-        Если React не работает, вы увидите этот текст.
-    </div>
     <div class="row">
         <div class="col-md-2 col-sm-2" id="statistics">
             <h4>Статистика</h4>
@@ -40,6 +37,7 @@
             <p>Сергей - 3</p>
         </div>
         <div class="col-md-8 col-sm-8">
+            <div id="new_chat"></div>
             <h4>Чат</h4>
             Подключенные пользователи: <span id="connected_users"></span><br>
             <div id="chat">
@@ -52,8 +50,6 @@
                         Здесь будут сообщения от пользователей.
                     </p>
                 {% endif %}
-                <div id="chat_new_messages">
-                </div>
             </div>
 
             <form id="chatform">
@@ -81,7 +77,7 @@
 {% endblock %}
 
 {% block more_scripts %}
-    <!--<script src='{% static "js/example.js" %}' type="text/babel"></script>-->
+    <script src='{% static "js/example.js" %}' type="text/babel"></script>
     <script src='{% static "js/multichat.js" %}' type="text/babel"></script>
     <script src='{% static "js/reconnecting-websocket.min.js" %}' type="text/javascript"></script>
 {% endblock more_scripts %}

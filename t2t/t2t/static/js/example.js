@@ -18,11 +18,39 @@
 //var React = require('react');
 //var ReactDOM = require('react-dom');
 
-var NewSuperComponent = React.createClass({
+var messages = [
+{from: 'admin', time: '12:13:14', text: 'Привет всем!'},
+{from: 'user', time: '12:14:15', text: 'Привет!'},
+{from: 'romko', time: '12:14:17', text: 'Пока!'}];
+
+var Messages = React.createClass({
     render: function() {
-        return <div>I'm the new div returned by react!</div>;
+        var data = this.props.data;
+        var newsTemplate = data.map(function(message, index) {
+            return (
+                <p key={index}>{message.time}: {message.from}: {message.text}</p>
+            )
+        })
+        console.log(newsTemplate);
+        console.log(data);
+        return (
+            <div>
+                {newsTemplate}
+            </div>
+        )
     }
 });
 
-ReactDOM.render(<NewSuperComponent name="Roman"/>,
-  document.getElementById('chat_new_messages'));
+var ChatApp = React.createClass({
+    render: function() {
+        return (
+            <div className="app">
+                Всем привет, я компонент ChatApp!. Я умею показывать сообщения в чате.
+                <Messages data={messages} /> {/*добавили свойство data */}
+                <button type="submit" className="btn btn-default">Отправить</button>
+            </div>
+        );
+    }
+});
+
+ReactDOM.render(<ChatApp />, document.getElementById('new_chat'));
