@@ -17,6 +17,7 @@
 //console.log("JS file loaded");
 //var React = require('react');
 //var ReactDOM = require('react-dom');
+window.ee = new EventEmitter();
 
 var messages = [
 {from: 'admin', time: '12:13:14', text: 'Привет всем!'},
@@ -41,13 +42,52 @@ var Messages = React.createClass({
     }
 });
 
+var TestInput = React.createClass({
+    getInitialState: function() {
+        return {
+            myValue: ''
+        };
+    },
+    onChangeHandler: function(e) {
+        this.setState({myValue: e.target.value})
+    },
+    onBtnClickHandler: function(e) {
+        e.preventDefault();
+//        var author = ReactDOM.findDOMNode(this.refs.author).value;
+//        var text = ReactDOM.findDOMNode(this.refs.text).value;
+//        var item = [{
+//            author: author,
+//            text: text,
+//            bigText: '...'
+//        }];
+        window.ee.emit('News.add', item);
+    }
+    render: function() {
+        return (
+            <div>
+                <input
+                    value={this.state.myValue}
+                    onChange={this.onChangeHandler}
+                    placeholder='введите значение'
+                />
+                <button onClick={this.onBtnClickHandler}>Отправить сообщение</button>
+            </div>
+        );
+    }
+});
+
 var ChatApp = React.createClass({
+    getInitialState: function() {
+        return {
+            messages: {messages}
+        }
+    },
     render: function() {
         return (
             <div className="app">
                 Всем привет, я компонент ChatApp!. Я умею показывать сообщения в чате.
-                <Messages data={messages} /> {/*добавили свойство data */}
-                <button type="submit" className="btn btn-default">Отправить</button>
+                <Messages data={this.state.messages} /> {/*добавили свойство data */}
+                <TestInput />
             </div>
         );
     }
