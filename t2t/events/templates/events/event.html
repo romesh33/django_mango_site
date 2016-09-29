@@ -28,6 +28,16 @@
     <div class="well">
         {{ event.description }}
     </div>
+    <div id="container">
+      <p>
+        To install React, follow the instructions on
+        <a href="https://github.com/facebook/react/">GitHub</a>.
+      </p>
+      <p>
+        If you can see this, React is <strong>not</strong> working right.
+        If you checked out the source from GitHub make sure to run <code>grunt</code>.
+      </p>
+    </div>
     <div class="row">
         <div class="col-md-2 col-sm-2" id="statistics">
             <h4>Статистика</h4>
@@ -73,12 +83,42 @@
             <a href="{% url 'bugs:addTicket' event.id %}">Завести баг</a>
         </div>
     </div>
+
 </div>
 {% endblock %}
 
 {% block more_scripts %}
-    <script src='{% static "js/EventEmitter.js" %}' type="text/babel"></script>
+    <!--<script src='{% static "js/EventEmitter.js" %}' type="text/babel"></script>-->
+    <script>
+        alert("1");
+        var messages = "{{ chat_messages|safe }}";
+        console.log(messages);
+        alert("2");
+    </script>
     <script src='{% static "js/example.js" %}' type="text/babel"></script>
     <script src='{% static "js/multichat.js" %}' type="text/babel"></script>
     <script src='{% static "js/reconnecting-websocket.min.js" %}' type="text/javascript"></script>
+    <script>
+      var ExampleApplication = React.createClass({
+        render: function() {
+          var elapsed = Math.round(this.props.elapsed  / 100);
+          var seconds = elapsed / 10 + (elapsed % 10 ? '' : '.0' );
+          var message =
+            'React has been successfully running for ' + seconds + ' seconds.';
+
+          return React.DOM.p(null, message);
+        }
+      });
+
+      // Call React.createFactory instead of directly call ExampleApplication({...}) in React.render
+      var ExampleApplicationFactory = React.createFactory(ExampleApplication);
+
+      var start = new Date().getTime();
+      setInterval(function() {
+        ReactDOM.render(
+          ExampleApplicationFactory({elapsed: new Date().getTime() - start}),
+          document.getElementById('container')
+        );
+      }, 50);
+    </script>
 {% endblock more_scripts %}

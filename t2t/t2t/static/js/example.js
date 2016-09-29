@@ -17,80 +17,87 @@
 //console.log("JS file loaded");
 //var React = require('react');
 //var ReactDOM = require('react-dom');
-window.ee = new EventEmitter();
+//window.ee = new EventEmitter();
 
 var messages = [
-{from: 'admin', time: '12:13:14', text: 'Привет всем!'},
-{from: 'user', time: '12:14:15', text: 'Привет!'},
-{from: 'romko', time: '12:14:17', text: 'Пока!'}];
+    {from: 'admin', time: '12:13:14', text: 'Привет всем!', key: 0},
+    {from: 'user', time: '12:14:15', text: 'Привет!', key: 1},
+    {from: 'romko', time: '12:14:17', text: 'Пока!', key: 2}];
 
-var Messages = React.createClass({
-    render: function() {
-        var data = this.props.data;
-        var newsTemplate = data.map(function(message, index) {
-            return (
-                <p key={index}>{message.time}: {message.from}: {message.text}</p>
-            )
-        })
-        console.log(newsTemplate);
-        console.log(data);
+var SendMessageBar = React.createClass({
+    handleButtonClick: function()
+    {
+        var text = this.refs.messageTextInput.value;
+        if (text.length > 0)
+        {
+            //alert(text);
+        }
+        else
+        {
+            //alert("Message text is empty");
+        }
+        var message = {from: "userX", time: "XX:XX", text: text};
+        this.props.onButtonClick(message);
+    },
+    render: function()
+    {
         return (
-            <div>
-                {newsTemplate}
+            <div className="bordered">
+                <input placeholder='введите сообщение' ref='messageTextInput'/>
+            <button onClick={this.handleButtonClick}>Отправить</button>
             </div>
         )
     }
 });
-
-var TestInput = React.createClass({
+      
+var Message = React.createClass({
+    render: function()
+    {
+        return (
+            <div className="bordered">
+                <p>{this.props.time}: {this.props.user}: {this.props.text}</p>
+            </div>
+        )
+    }
+});
+      
+var MessageTable = React.createClass({
+    render: function() {
+        var messages = [];
+        this.props.messages.forEach(function(message, index) {
+            messages.push(<Message text={message.text} time={message.time} user={message.from} key={index} />);
+        });
+        return (
+            <div>
+                {messages}
+            </div>
+        )
+    }
+});
+        
+var Chat = React.createClass({
     getInitialState: function() {
         return {
-            myValue: ''
+            messages: messages,
         };
     },
-    onChangeHandler: function(e) {
-        this.setState({myValue: e.target.value})
+    handleMessageSend : function(message) {
+        //alert("type of " + typeof message);
+        //var old_messages = this.state.messages;
+        //var new_messages = old_messages.push(message);
+        this.setState({messages: messages.push(message)});
+        //alert("Number of messages in state is: " + this.state.messages.length);
     },
-    onBtnClickHandler: function(e) {
-        e.preventDefault();
-//        var author = ReactDOM.findDOMNode(this.refs.author).value;
-//        var text = ReactDOM.findDOMNode(this.refs.text).value;
-//        var item = [{
-//            author: author,
-//            text: text,
-//            bigText: '...'
-//        }];
-        window.ee.emit('News.add', item);
-    }
     render: function() {
         return (
             <div>
-                <input
-                    value={this.state.myValue}
-                    onChange={this.onChangeHandler}
-                    placeholder='введите значение'
-                />
-                <button onClick={this.onBtnClickHandler}>Отправить сообщение</button>
+                <h1>This is chat!</h1>
+                <MessageTable messages={this.props.messages}/>
+                {/* This is comment */}
+                <SendMessageBar onButtonClick={this.handleMessageSend}/>
             </div>
-        );
-    }
+        )
+    }  
 });
-
-var ChatApp = React.createClass({
-    getInitialState: function() {
-        return {
-            messages: {messages}
-        }
-    },
-    render: function() {
-        return (
-            <div className="app">
-                Всем привет, я компонент ChatApp!. Я умею показывать сообщения в чате.
-                <Messages data={this.state.messages} /> {/*добавили свойство data */}
-                <TestInput />
-            </div>
-        );
-    }
-});
-
-ReactDOM.render(<ChatApp />, document.getElementById('new_chat'));
+      
+ReactDOM.render(<Chat messages={messages}/>, document.getElementById('new_chat'));
