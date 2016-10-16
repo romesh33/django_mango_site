@@ -10,19 +10,38 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-//ReactDOM.render(
-//  <p>Написано REact-ом</p>,
-//  document.getElementById('content')
-//);
-//console.log("JS file loaded");
-//var React = require('react');
-//var ReactDOM = require('react-dom');
-//window.ee = new EventEmitter();
+var messages = messages_obj;
+//console.log(messages);
+var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
+var path = ws_scheme + '://' + window.location.host + "/chat" + window.location.pathname;
+console.log("Opened web socket with path: " + path);
+var chatsock = new ReconnectingWebSocket(path);
 
-var messages = [
-    {from: 'admin', time: '12:13:14', text: 'Привет всем!', key: 0},
-    {from: 'user', time: '12:14:15', text: 'Привет!', key: 1},
-    {from: 'romko', time: '12:14:17', text: 'Пока!', key: 2}];
+chatsock.onmessage = function(message)
+{
+    console.log("Message received by web socket");
+    //TODO: for some reason web socket doesn't receive messages when we send them by Send button
+    var data = JSON.parse(message.data);
+    if (data.message_text != null)
+    {
+        var sender = data.sender;
+        console.log("sender=" + sender);
+        var text = data.message_text;
+        console.log("text=" + text);
+        var time = data.time;
+        console.log("time=" + time);
+        var received_message = {"from": sender, "text": text, "time": time};
+        console.log("received_message = " + received_message);
+        messages.push(received_message);
+        console.log("Messages length: " + messages.length);
+    }
+    else
+    {
+        // сюда мы должны попасть, если посылаем сообщение из функции consumers, которая посылает сообщение в ответ на
+        // подключение вебсокета:
+        console.log("message length is zero... it can be because user is connected, in this case no messsage data exists...");
+    }
+};
 
 var SendMessageBar = React.createClass({
     handleButtonClick: function()
@@ -36,8 +55,7 @@ var SendMessageBar = React.createClass({
         {
             //alert("Message text is empty");
         }
-        var message = {from: "userX", time: "XX:XX", text: text};
-        this.props.onButtonClick(message);
+        this.props.onButtonClick(text);
     },
     render: function()
     {
@@ -81,11 +99,13 @@ var Chat = React.createClass({
             messages: messages,
         };
     },
-    handleMessageSend : function(message) {
+    handleMessageSend : function(text) {
         //alert("type of " + typeof message);
         //var old_messages = this.state.messages;
         //var new_messages = old_messages.push(message);
-        this.setState({messages: messages.push(message)});
+        //this.setState({messages: messages.push(message)});
+        console.log("Message was sent to web socket with text: " + text);
+        chatsock.send(JSON.stringify(text));
         //alert("Number of messages in state is: " + this.state.messages.length);
     },
     render: function() {

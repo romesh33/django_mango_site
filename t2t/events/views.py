@@ -2,6 +2,8 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 import logging
+import json
+import simplejson
 
 from django.contrib.auth.decorators import login_required
 from django.views.generic import DetailView
@@ -31,6 +33,13 @@ class EventDetailView(DetailView):
         chat_messages = ChatMessage.objects.filter(event=event)
         context['chat_message_form'] = chat_message_form
         context['chat_messages'] = chat_messages
+        messages_list = []
+        for message in chat_messages:
+            messages_list.append({"text": message.text, "from": message.sender.username,
+                                 "time": message.creation_time.strftime("%s %s" % ("%a %d %b %Y", "%H:%M"))})
+        #({"message_text": message_text,"from_user": from_user.username,
+        context['messages'] = simplejson.dumps(messages_list)
+        #print(context['messages'])
         return context
 
 @login_required

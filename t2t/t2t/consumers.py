@@ -14,62 +14,34 @@ log = logging.getLogger(__name__)
 
 @channel_session_user_from_http
 def ws_connect(message):
-    # Extract the room from the message. This expects message.path to be of the
-    # form /chat/{label}/, and finds a Room if the message path is applicable,
-    # and if the Room exists. Otherwise, bails (meaning this is a some othersort
-    # of websocket). So, this is effectively a version of _get_object_or_404.
     event_id = 0
     try:
-        #print(message.user)
-        #print(message['path'])
         thread_id = message['path'].strip('/').split('/')[3]
         group_name = 'chat-'+thread_id
         print("Group name:" + group_name)
         Group(group_name, channel_layer=message.channel_layer).add(message.reply_channel)
-        #print(thread_id)
-        # prefix, label = message['path'].decode('ascii').strip('/').split('/')
-        # if prefix != 'chat':
-        #     log.debug('invalid ws path=%s', message['path'])
-        #     return
-        #thread = MessageThread.objects.get(id=thread_id)
-        #print(thread)
     except ValueError:
-        #log.debug('invalid ws path=%s', message['path'])
         return
     except IndexError:
         event_id = message['path'].strip('/').split('/')[2]
-        #print(event_id)
         group_name = 'multichat-'+event_id
         print("Group name:" + group_name)
         Group(group_name, channel_layer=message.channel_layer).add(message.reply_channel)
         print("Sending user name to socket: " + message.user.username)
         Group(group_name, channel_layer=message.channel_layer).send({'text': json.dumps({"user_connected": message.user.username})})
-    # except Room.DoesNotExist:
-    #     log.debug('ws room does not exist label=%s', label)
-    #     return
-    #
-    # log.debug('chat connect room=%s client=%s:%s',
-    #     room.label, message['client'][0], message['client'][1])
-    #
-    # # Need to be explicit about the channel layer so that testability works
-    # # This may be a FIXME?
-    #print(message.reply_channel)
-    #Group('chat-'+thread_id, channel_layer=message.channel_layer).add(message.reply_channel)
-    #
-    # message.channel_session['room'] = room.label
-
 
 @channel_session_user
 def ws_receive(message):
     try:
         # если из пути можно вычленить thread_id, а значит, сообщение было послано из личной переписки:
+        print(message['path'].strip('/').split('/'))
         thread_id = message['path'].strip('/').split('/')[3]
         print("Sending personal message")
         send_personal_message(message, thread_id)
     except IndexError:
         # если из пути нельзя вычленить thread_id (оно было послано из чата события), получаем event_id:
         event_id = message['path'].strip('/').split('/')[2]
-        print("Sending chat message")
+        print("Sending chat message to event ID: " + event_id)
         send_chat_message(message, event_id)
 
 @channel_session_user_from_http
@@ -120,22 +92,22 @@ def send_personal_message(message, thread_id):
 
 
 def send_chat_message(message, event_id):
-    text = json.loads(message['text'])
-    message_text = text["message"]
+    text = message['text']
+    print("path = " + message['path'])
+    print("text = " + text)
     sender = message.user
+    print("sender = " + sender.username)
     event = get_object_or_404(Event,pk=event_id)
-    new_chat_message = ChatMessage(sender=sender, text=message_text, event=event)
+    new_chat_message = ChatMessage(sender=sender, text=text, event=event)
     new_chat_message.save()
     dt = datetime.datetime.now()
-    try:
-        data = json.loads(message['text'])
-    except ValueError:
-        log.debug("ws message isn't json text=%s", message_text)
-        return
-    if data:
-        log.debug('chat message =%s', data['message'])
-    print(message_text)
+    time = dt.strftime("%s %s" % ("%a %d %b %Y", "%H:%M"))
+    print("time = " + time)
     group_name = 'multichat-'+event_id
-    Group(group_name, channel_layer=message.channel_layer).send({'text': json.dumps({"message_text": message_text,
-                                                        "sender": sender.username,
-                                                        "creation_time": dt.strftime("%s %s" % ("%a %d %b %Y", "%H:%M"))})})
+    #data_to_send = {'content': json.dumps({"message_text": text, "from": sender.username, "time": time})}
+    print("Sending message in consumer to group name: " + group_name)
+    #print(data_to_send)
+    Group(group_name, channel_layer=message.channel_layer).send({'text': json.dumps({"message_text": text,
+                                                                                     "sender": sender.username,
+                                                                                     "time": time})})
+    print("Sent")
