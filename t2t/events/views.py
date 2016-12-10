@@ -39,6 +39,11 @@ class EventDetailView(DetailView):
                                  "time": message.creation_time.strftime("%s %s" % ("%a %d %b %Y", "%H:%M"))})
         #({"message_text": message_text,"from_user": from_user.username,
         context['messages'] = simplejson.dumps(messages_list)
+        online_users = []
+        for user in event.online_chat_users.all():
+            online_users.append(user.username)
+            print("Event view: user is online in chat: " + user.username)
+        context['online_users'] = simplejson.dumps(online_users)
         #print(context['messages'])
         return context
 

@@ -9,6 +9,7 @@ from channels.auth import http_session_user, channel_session_user, channel_sessi
 from mess.models import Message, MessageThread, ChatMessage
 from events.models import Event
 from channels.handler import AsgiRequest
+# from django.contrib.auth.models import AnonymousUser
 
 log = logging.getLogger(__name__)
 
@@ -24,10 +25,23 @@ def ws_connect(message):
         return
     except IndexError:
         event_id = message['path'].strip('/').split('/')[2]
+        # set event variable with current event - to update online_chat_users for it:
+        event = Event.objects.get(id=event_id)
+        # TODO: handling anonymous user (in case when no authorised user connects to WebSocket):
+        #if message.user == AnonymousUser():
+        #    print("HEY THERE IS ANOMYMOUS USER")
+        print("User: " + message.user.username + " is connected to the chat of event: " + event.event_name)
+        # update of online_chat_users for this event:
+        event.online_chat_users.add(message.user)
+        event.save()
+        online_users = ""
+        for user in event.online_chat_users.all():
+            online_users = online_users + user.username + ","
+        print("Online users: " + online_users)
         group_name = 'multichat-'+event_id
         print("Group name:" + group_name)
         Group(group_name, channel_layer=message.channel_layer).add(message.reply_channel)
-        print("Sending user name to socket: " + message.user.username)
+        print("Sending connected user name to socket: " + message.user.username)
         Group(group_name, channel_layer=message.channel_layer).send({'text': json.dumps({"user_connected": message.user.username})})
 
 @channel_session_user
@@ -44,7 +58,7 @@ def ws_receive(message):
         print("Sending chat message to event ID: " + event_id)
         send_chat_message(message, event_id)
 
-@channel_session_user_from_http
+@channel_session_user
 def ws_disconnect(message):
     #print(message)
     #print(message.reply_channel)
@@ -60,8 +74,21 @@ def ws_disconnect(message):
     except IndexError:
         event_id = message['path'].strip('/').split('/')[2]
         #print(event_id)
+        event = Event.objects.get(id=event_id)
+        event.online_chat_users.remove(message.user)
+        event.save()
+        print("User: " + message.user.username + " is disconnected from the chat of event: " + event.event_name)
+        online_users = ""
+        for user in event.online_chat_users.all():
+            online_users = online_users + user.username + ","
+        print("Online users: " + online_users)
         group_name = 'multichat-'+event_id
+        print("Sending disconnected user name to socket: " + message.user.username)
+        Group(group_name, channel_layer=message.channel_layer).send({'text': json.dumps({"user_disconnected": message.user.username})})
+        print("Message with disconnected user sent to socket - 1")
+        # discarding the reply channel:
         Group(group_name, channel_layer=message.channel_layer).discard(message.reply_channel)
+        print("Reply channel discarded - 2")
 
 def send_personal_message(message, thread_id):
     text = json.loads(message['text'])

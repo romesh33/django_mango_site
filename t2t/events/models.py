@@ -11,6 +11,7 @@ class Event(models.Model):
     max_participants_number = models.IntegerField(default=50)
     current_participants_number = models.IntegerField(default=0)
     users = models.ManyToManyField(User)
+    online_chat_users = models.ManyToManyField(User, related_name="online_users")
 
     def __str__(self):
         return self.event_name

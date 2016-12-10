@@ -1,6 +1,14 @@
-div#chat {
+.chat_app {
   border: 1px Solid Gray;
-  background-color: Yellow;
+  height: 200px;
+  overflow-y: auto;
+}
+
+#user_list {
+  border: 1px Solid Gray;
+  background-color: gray;
+  height: 50px;
+  margin-bottom: 5px;
 }
 
 div#actions {

@@ -37,6 +37,7 @@
             <p>Сергей - 3</p>
         </div>
         <div class="col-md-8 col-sm-8">
+            <div id="user_list"></div>
             <div id="new_chat"></div>
         </div>
         <div class="col-md-2 col-sm-2" id="actions">
@@ -54,12 +55,14 @@
 {% endblock %}
 
 {% block more_scripts %}
-    <!--<script src='{% static "js/EventEmitter.js" %}' type="text/babel"></script>-->
+    <script src='{% static "js/EventEmitter.js" %}'></script>
     <script>
-        <!--global variable that shares messsages-->
-        var messages = "{{ messages|escapejs }}";
-        var messages_obj = JSON.parse(messages);
-        <!--console.log(messages_obj);-->
+        <!--global variable that shares messsages received from django view is json serialized format-->
+        var messages_from_django_view = "{{ messages|escapejs }}";
+        var users_from_django_view = "{{ online_users|escapejs }}";
+        <!--парсим json и получаем из него js объекты с сообщениями-->
+        var messages_obj = JSON.parse(messages_from_django_view);
+        var users_obj = JSON.parse(users_from_django_view);
     </script>
     <script src='{% static "js/example.js" %}' type="text/babel"></script>
     <!--<script src='{% static "js/multichat.js" %}' type="text/babel"></script>-->
