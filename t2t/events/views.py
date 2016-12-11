@@ -33,12 +33,19 @@ class EventDetailView(DetailView):
         chat_messages = ChatMessage.objects.filter(event=event)
         context['chat_message_form'] = chat_message_form
         context['chat_messages'] = chat_messages
+        # Form the list of messages to sebd to the template (we need a dictionary for the faster work with
+        # messages in the chat:
         messages_list = []
+        messages_dictionary = {}
         for message in chat_messages:
             messages_list.append({"text": message.text, "from": message.sender.username,
                                  "time": message.creation_time.strftime("%s %s" % ("%a %d %b %Y", "%H:%M"))})
+            messages_dictionary[message.id] = {"text": message.text, "from": message.sender.username,
+            "time": message.creation_time.strftime("%s %s" % ("%a %d %b %Y", "%H:%M"))}
+            print(messages_dictionary[message.id])
         #({"message_text": message_text,"from_user": from_user.username,
         context['messages'] = simplejson.dumps(messages_list)
+        context['messages_dictionary'] = simplejson.dumps(messages_dictionary)
         online_users = []
         for user in event.online_chat_users.all():
             online_users.append(user.username)

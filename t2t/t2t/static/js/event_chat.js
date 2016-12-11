@@ -1,7 +1,10 @@
 window.ee = new EventEmitter();
 // читаем в локальную переменную messages объекты, полученные из джанго в виде json и преобразованные в js объекты
 // в глобальном js скрипте (в теле event.html):
+// messages is a list of messages without ID:
 var messages = messages_obj;
+// messages_dict is a dictionary with keys = message ids and values = dictionaries {from, text, time}:
+var messages_dict = messages_dict_obj;
 var users = users_obj;
 var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
 var path = ws_scheme + '://' + window.location.host + "/chat" + window.location.pathname;
@@ -18,13 +21,15 @@ chatsock.onmessage = function(message)
     var data = JSON.parse(message.data);
     if (data.message_text != null)
     {
+        var message_id = data.id;
+        //console.log("new_nessage_id = " + message_id);
         var sender = data.sender;
         //console.log("sender=" + sender);
         var text = data.message_text;
         //console.log("text of receivd message=" + text);
         var time = data.time;
         //console.log("time=" + time);
-        var received_message = {"from": sender, "text": text, "time": time};
+        var received_message = {"id": message_id, "from": sender, "text": text, "time": time};
         //console.log("received_message = " + received_message);
         //messages.push(received_message);
         window.ee.emit('Message.add', received_message);
@@ -125,13 +130,19 @@ var MessageTable = React.createClass({
 var Chat = React.createClass({
     getInitialState: function() {
         return {
-            messages: messages,
+            //messages: messages,
+            messages: messages_dict
         };
     },
     componentDidMount: function() {
         var self = this;
         window.ee.addListener('Message.add', function(received_message) {
-            messages.push(received_message);
+            //messages.push(received_message);
+            var id = received_message['id'];
+            var from = received_message['from'];
+            var text = received_message['text'];
+            var time = received_message['time'];
+            messages[id] = {from: from, text: text, time: time};
             self.setState({messages: messages});
         });
     },

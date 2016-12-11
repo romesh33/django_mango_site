@@ -127,6 +127,7 @@ def send_chat_message(message, event_id):
     event = get_object_or_404(Event,pk=event_id)
     new_chat_message = ChatMessage(sender=sender, text=text, event=event)
     new_chat_message.save()
+    id = new_chat_message.id
     dt = datetime.datetime.now()
     time = dt.strftime("%s %s" % ("%a %d %b %Y", "%H:%M"))
     print("time = " + time)
@@ -134,7 +135,12 @@ def send_chat_message(message, event_id):
     #data_to_send = {'content': json.dumps({"message_text": text, "from": sender.username, "time": time})}
     print("Sending message in consumer to group name: " + group_name)
     #print(data_to_send)
-    Group(group_name, channel_layer=message.channel_layer).send({'text': json.dumps({"message_text": text,
+
+    #Group(group_name, channel_layer=message.channel_layer).send({'text': json.dumps({"message_text": text,
+    #                                                                                 "sender": sender.username,
+    #                                                                                 "time": time})})
+    Group(group_name, channel_layer=message.channel_layer).send({'text': json.dumps({"id": id,
+                                                                                     "message_text": text,
                                                                                      "sender": sender.username,
                                                                                      "time": time})})
     print("Sent")
