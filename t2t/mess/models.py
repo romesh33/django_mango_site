@@ -52,6 +52,7 @@ class ChatMessage(models.Model):
     event = models.ForeignKey(Event, related_name="event")
     text = models.TextField(max_length=2000, null=True, blank=True)
     creation_time = models.DateTimeField('creation time', auto_now=True)
+    is_deleted = models.BooleanField(default=False)
     #objects = MessageManager()
 
     def __str__(self):

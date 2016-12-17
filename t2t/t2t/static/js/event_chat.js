@@ -22,13 +22,13 @@ chatsock.onmessage = function(message)
     if (data.message_text != null)
     {
         var message_id = data.id;
-        //console.log("new_nessage_id = " + message_id);
+        console.log("new_nessage_id = " + message_id);
         var sender = data.sender;
-        //console.log("sender=" + sender);
+        console.log("sender=" + sender);
         var text = data.message_text;
-        //console.log("text of receivd message=" + text);
+        console.log("text of receivd message=" + text);
         var time = data.time;
-        //console.log("time=" + time);
+        console.log("time=" + time);
         var received_message = {"id": message_id, "from": sender, "text": text, "time": time};
         //console.log("received_message = " + received_message);
         //messages.push(received_message);
@@ -49,6 +49,12 @@ chatsock.onmessage = function(message)
             var username = data.user_disconnected;
             console.log("User " + username + " is disconnected");
             window.ee.emit('User.remove', username);
+        }
+        else if (data.action != null)
+        {
+            var deleted_message_id = data.id;
+            console.log("Hey hey hey!!! Someone deleted message with id + " + deleted_message_id + " in the chat..");
+            window.ee.emit('Message.delete', deleted_message_id);
         }
         // сюда мы должны попасть, если посылаем сообщение из функции consumers, которая посылает сообщение в ответ на
         // подключение вебсокета:
@@ -84,10 +90,8 @@ var SendMessageBar = React.createClass({
 
 var DeleteMessageButton = React.createClass({
     handleDeleteButtonClick: function() {
-        var text = this.props.text;
-        var time = this.props.time;
-        var user = this.props.user;
-        this.props.onButtonClick(time, user, text);
+        var message_id = this.props.messageId;
+        this.props.onButtonClick(message_id);
     },
     render: function()
     {
@@ -103,8 +107,7 @@ var Message = React.createClass({
         return (
             <div className="bordered">
                 <span>{this.props.time}: {this.props.user}: {this.props.text}</span>
-                <DeleteMessageButton onButtonClick={this.props.onMessageDelete} text={this.props.text}
-                user={this.props.user} time={this.props.time}/>
+                <DeleteMessageButton onButtonClick={this.props.onMessageDelete} messageId={this.props.id}/>
             </div>
         )
     }
@@ -114,10 +117,12 @@ var MessageTable = React.createClass({
     render: function() {
         var messages = [];
         var messDelFunction = this.props.onMessageDelete;
-        console.log("messDelFunction = " + messDelFunction);
-        this.props.messages.forEach(function(message, index) {
+        var messages_dict = this.props.messages;
+        $.each(messages_dict, function(key, message) {
+            //console.log("TEXT= " + message.text);
+            //console.log("KEY= " + key);
             messages.push(<Message text={message.text} time={message.time} user={message.from}
-            key={index} onMessageDelete={messDelFunction}/>);
+                key={key} onMessageDelete={messDelFunction} id={key}/>);
         });
         return (
             <div>
@@ -130,7 +135,6 @@ var MessageTable = React.createClass({
 var Chat = React.createClass({
     getInitialState: function() {
         return {
-            //messages: messages,
             messages: messages_dict
         };
     },
@@ -138,46 +142,46 @@ var Chat = React.createClass({
         var self = this;
         window.ee.addListener('Message.add', function(received_message) {
             //messages.push(received_message);
+            //todo: now when new message is sent, it has id like 300. If there are only 50 messages in props,
+            //rest of indexes are filled with nulls :( need to fix this
             var id = received_message['id'];
             var from = received_message['from'];
             var text = received_message['text'];
             var time = received_message['time'];
-            messages[id] = {from: from, text: text, time: time};
-            self.setState({messages: messages});
+            var messages_temp = self.state.messages;
+            console.log(id,from,text,time);
+            messages_temp[id] = {from: from, text: text, time: time};
+            self.setState({messages: messages_temp});
+        });
+        window.ee.addListener('Message.delete', function(deleted_message_id) {
+            var messages_temp = self.state.messages;
+            delete messages_temp[deleted_message_id];
+            self.setState({messages: messages_temp});
         });
     },
     componentWillUnmount: function() {
         window.ee.removeListener('Message.add');
+        window.ee.removeListener('Message.delete');
     },
     handleMessageSend : function(text) {
         console.log("Message was sent to web socket with text: " + text);
         chatsock.send(JSON.stringify(text));
     },
-    handleMessageDelete : function(time, user, text) {
-        console.log("Chat: Message with time: " + time + ", user: " + user + ", text: " + text + " will be deleted");
-        //TODO: need to delete specific message from messages;
-        var message_to_delete = {"from": user, "text": text, "time": time};
-        var indexInArray = messages.indexOf(message_to_delete);
-        console.log("Index of mess to del = " + indexInArray);
-        if (indexInArray == -1)
-        {
-            console.log("As I didn't find element, I'll delete latest in the list :)");
-            messages.pop();
-            //что-то мне кажется, что не совсем правильно сет стейт в самом компоненте делать:
-            var self = this;
-            self.setState({messages: messages});
-        }
-        // And also send message about message deletion to the web socket - for all clients to understand that it was deleted
-        //messages.delete()
-        //chatsock.send(JSON.stringify(text));
-        //this.setState({messages: messages});
+    handleMessageDelete : function(message_id) {
+        //console.log("Chat: Message with id: " + message_id + " will be deleted");
+        var messages_temp = this.state.messages;
+        delete messages_temp[message_id];
+        this.setState({messages: messages_temp});
+        var delete_message_text = {id: message_id, action: 'delete_message'};
+        console.log("Sending delete message to socket:" + delete_message_text);
+        chatsock.send(JSON.stringify(delete_message_text));
     },
     render: function() {
         return (
             <div>
                 <div className="chat_app" id="chat">
                     <h1>This is chat!</h1>
-                    <MessageTable messages={this.props.messages} onMessageDelete={this.handleMessageDelete}/>
+                    <MessageTable messages={this.state.messages} onMessageDelete={this.handleMessageDelete}/>
                     {/* This is comment */}
                 </div>
                 <SendMessageBar onButtonClick={this.handleMessageSend}/>
@@ -234,7 +238,7 @@ var UsersList = React.createClass({
     }
 });
 
-ReactDOM.render(<Chat messages={messages}/>, document.getElementById('new_chat'));
+ReactDOM.render(<Chat />, document.getElementById('new_chat'));
 ReactDOM.render(<UsersList users={users}/>, document.getElementById('user_list'));
 
 // this function does autoscrolling to the bottom of the chat. I'm not sure how it works - just copied example from SO :)

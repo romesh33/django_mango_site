@@ -55,8 +55,15 @@ def ws_receive(message):
     except IndexError:
         # если из пути нельзя вычленить thread_id (оно было послано из чата события), получаем event_id:
         event_id = message['path'].strip('/').split('/')[2]
-        print("Sending chat message to event ID: " + event_id)
-        send_chat_message(message, event_id)
+        try:
+            print("Sending chat message to event ID: " + event_id)
+            text = json.loads(message['text'])
+            print("Parsed ID with json.load:" + text['id'])
+            print("Parsed Action with json.load:" + text['action'])
+            if text['action'] == 'delete_message':
+                delete_chat_message(message, text['id'], event_id)
+        except TypeError:
+            send_chat_message(message, event_id)
 
 @channel_session_user
 def ws_disconnect(message):
@@ -89,6 +96,16 @@ def ws_disconnect(message):
         # discarding the reply channel:
         Group(group_name, channel_layer=message.channel_layer).discard(message.reply_channel)
         print("Reply channel discarded - 2")
+
+def delete_chat_message(message, message_id, event_id):
+    print("Mess ID to delete = " + message_id)
+    message_to_delete = ChatMessage.objects.get(id=message_id)
+    message_to_delete.delete()
+    group_name = 'multichat-'+ event_id
+    Group(group_name, channel_layer=message.channel_layer).send({'text': json.dumps({"id": message_id,
+                                                                                     "action": 'delete_message'})})
+    #print("Sent message about deletion to the ws")
+
 
 def send_personal_message(message, thread_id):
     text = json.loads(message['text'])
