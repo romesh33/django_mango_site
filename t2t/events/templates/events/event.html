@@ -58,15 +58,23 @@
     <script src='{% static "js/EventEmitter.js" %}'></script>
     <script>
         // global variable that shares messsages received from django view is json serialized format
-        var messages_from_django_view = "{{ messages|escapejs }}";
+        //var messages_from_django_view = "{{ messages|escapejs }}";
         // new way of importing messages from django view - with dictionary of dictionaries with key = message id:
         var messages_dict_from_django_view = "{{ messages_dictionary|escapejs }}";
         var users_from_django_view = "{{ online_users|escapejs }}";
         //парсим json и получаем из него js объекты с сообщениями:
-        var messages_obj = JSON.parse(messages_from_django_view);
+        //var messages_obj = JSON.parse(messages_from_django_view);
         var messages_dict_obj = JSON.parse(messages_dict_from_django_view);
-        console.log(messages_dict_obj);
         var users_obj = JSON.parse(users_from_django_view);
+        var user_is_authenticated = 0;
+        var user_name = 0;
+    {% if user.is_authenticated %}
+        user_is_authenticated = 1;
+        user_name = "{{ user.username|escapejs }}";
+    {% else %}
+        user_name = "";
+        console.log("user is not authenticated");
+    {% endif %}
     </script>
     <script src='{% static "js/event_chat.js" %}' type="text/babel"></script>
     <!--<script src='{% static "js/multichat.js" %}' type="text/babel"></script>-->

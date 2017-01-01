@@ -99,8 +99,9 @@ def ws_disconnect(message):
 
 def delete_chat_message(message, message_id, event_id):
     print("Mess ID to delete = " + message_id)
-    message_to_delete = ChatMessage.objects.get(id=message_id)
-    message_to_delete.delete()
+    message_to_hide = ChatMessage.objects.get(id=message_id)
+    message_to_hide.is_deleted=True
+    message_to_hide.save()
     group_name = 'multichat-'+ event_id
     Group(group_name, channel_layer=message.channel_layer).send({'text': json.dumps({"id": message_id,
                                                                                      "action": 'delete_message'})})

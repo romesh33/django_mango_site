@@ -30,7 +30,7 @@ class EventDetailView(DetailView):
         # Add in a QuerySet of all the books
         chat_message_form = ChatMessageForm()
         event = Event.objects.get(pk=self.object.pk)
-        chat_messages = ChatMessage.objects.filter(event=event)
+        chat_messages = ChatMessage.objects.filter(event=event,is_deleted=False)
         context['chat_message_form'] = chat_message_form
         context['chat_messages'] = chat_messages
         # Form the list of messages to sebd to the template (we need a dictionary for the faster work with
@@ -38,13 +38,13 @@ class EventDetailView(DetailView):
         messages_list = []
         messages_dictionary = {}
         for message in chat_messages:
-            messages_list.append({"text": message.text, "from": message.sender.username,
-                                 "time": message.creation_time.strftime("%s %s" % ("%a %d %b %Y", "%H:%M"))})
+            #messages_list.append({"text": message.text, "from": message.sender.username,
+            #                     "time": message.creation_time.strftime("%s %s" % ("%a %d %b %Y", "%H:%M"))})
             messages_dictionary[message.id] = {"text": message.text, "from": message.sender.username,
             "time": message.creation_time.strftime("%s %s" % ("%a %d %b %Y", "%H:%M"))}
             print(messages_dictionary[message.id])
         #({"message_text": message_text,"from_user": from_user.username,
-        context['messages'] = simplejson.dumps(messages_list)
+        #context['messages'] = simplejson.dumps(messages_list)
         context['messages_dictionary'] = simplejson.dumps(messages_dictionary)
         online_users = []
         for user in event.online_chat_users.all():

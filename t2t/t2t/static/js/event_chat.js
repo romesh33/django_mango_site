@@ -2,12 +2,13 @@ window.ee = new EventEmitter();
 // читаем в локальную переменную messages объекты, полученные из джанго в виде json и преобразованные в js объекты
 // в глобальном js скрипте (в теле event.html):
 // messages is a list of messages without ID:
-var messages = messages_obj;
+//var messages = messages_obj;
 // messages_dict is a dictionary with keys = message ids and values = dictionaries {from, text, time}:
 var messages_dict = messages_dict_obj;
 var users = users_obj;
 var ws_scheme = window.location.protocol == "https:" ? "wss" : "ws";
 var path = ws_scheme + '://' + window.location.host + "/chat" + window.location.pathname;
+//var user_is_authenticated = user_is_authenticated;
 console.log("Opened web socket with path: " + path);
 console.log("Users: " + users);
 // создаем сокет:
@@ -95,9 +96,21 @@ var DeleteMessageButton = React.createClass({
     },
     render: function()
     {
-        return (
-            <button onClick={this.handleDeleteButtonClick}>x</button>
-        )
+        var message_creator = this.props.creator;
+        //user_name
+        //console.log(message_creator, user_name, user_is_authenticated);
+        if ((user_name == message_creator) && (user_is_authenticated == 1))
+        {
+            return (
+                <button onClick={this.handleDeleteButtonClick}>x</button>
+            )
+        }
+        else
+        {
+            return (
+                <span></span>
+            );
+        }
     }
 });
 
@@ -107,7 +120,7 @@ var Message = React.createClass({
         return (
             <div className="bordered">
                 <span>{this.props.time}: {this.props.user}: {this.props.text}</span>
-                <DeleteMessageButton onButtonClick={this.props.onMessageDelete} messageId={this.props.id}/>
+                <DeleteMessageButton onButtonClick={this.props.onMessageDelete} messageId={this.props.id} creator={this.props.user}/>
             </div>
         )
     }
@@ -177,23 +190,39 @@ var Chat = React.createClass({
         chatsock.send(JSON.stringify(delete_message_text));
     },
     render: function() {
-        return (
-            <div>
-                <div className="chat_app" id="chat">
-                    <h1>This is chat!</h1>
-                    <MessageTable messages={this.state.messages} onMessageDelete={this.handleMessageDelete}/>
-                    {/* This is comment */}
+        // variable user_is_authenticated is taken from global variables from event's html page:
+        if (user_is_authenticated == 1)
+        {
+            return (
+                <div>
+                    <div className="chat_app" id="chat">
+                        <h1>This is chat!</h1>
+                        <MessageTable messages={this.state.messages} onMessageDelete={this.handleMessageDelete}/>
+                        {/* This is comment */}
+                    </div>
+                    <SendMessageBar onButtonClick={this.handleMessageSend}/>
                 </div>
-                <SendMessageBar onButtonClick={this.handleMessageSend}/>
-            </div>
-        )
+            )
+        }
+        else
+        {
+            return (
+                <div>
+                    <div className="chat_app" id="chat">
+                        <h1>This is chat!</h1>
+                        <MessageTable messages={this.state.messages} onMessageDelete={this.handleMessageDelete}/>
+                        {/* This is comment */}
+                    </div>
+                </div>
+            )
+        }
     }
 });
 
 var SingleUser = React.createClass({
     render: function() {
         return (
-            <span>{this.props.name} and </span>
+            <span>{this.props.name} </span>
         )
     }
 });
@@ -207,18 +236,38 @@ var UsersList = React.createClass({
     componentDidMount: function() {
         var self = this;
         window.ee.addListener('User.add', function(username) {
-            users.push(username);
-            self.setState({users: users});
+            var more_users = self.state.users;
+            // if user doesn't exist in the list (it's possible when Refreshing the page and in other unknown cases)
+            // - add it to array of users:
+            if (more_users.indexOf(username) == -1)
+            {
+                console.log("1 - Didn't find the user in the list and added it");
+                more_users.push(username);
+            }
+            else
+            // if user was found in the list:
+            {
+                console.log("2 - Found the user in the list and didn't add it");
+            }
+            self.setState({users: more_users});
+            console.log("Listener noticed that user " + username + " was connected");
         });
         window.ee.addListener('User.remove', function(username) {
+            var less_users = self.state.users;
             var index = users.indexOf(username);
-            if (index != 0)
+            if (index != -1)
             {
-                users.splice(index, 1);
+                //if user was found in the list of online users - delete it:
+                less_users.splice(index, 1);
+            }
+            else
+            {
+                // otherwise - do nothing:
+                console.log("User " + username + " wasn't found in the list of online users");
             }
             console.log("Listener noticed that user " + username + " was disconnected");
             //users.push(username);
-            self.setState({users: users});
+            self.setState({users: less_users});
         });
     },
     componentWillUnmount: function() {
@@ -227,7 +276,7 @@ var UsersList = React.createClass({
     },
     render: function() {
         var users = [];
-        this.props.users.forEach(function(user, index) {
+        this.state.users.forEach(function(user, index) {
             users.push(<SingleUser name={user} key={index} />);
         });
         return (
@@ -239,7 +288,7 @@ var UsersList = React.createClass({
 });
 
 ReactDOM.render(<Chat />, document.getElementById('new_chat'));
-ReactDOM.render(<UsersList users={users}/>, document.getElementById('user_list'));
+ReactDOM.render(<UsersList />, document.getElementById('user_list'));
 
 // this function does autoscrolling to the bottom of the chat. I'm not sure how it works - just copied example from SO :)
 // http://stackoverflow.com/questions/25505778/automatically-scroll-down-chat-div
