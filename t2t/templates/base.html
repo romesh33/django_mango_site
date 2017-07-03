@@ -52,6 +52,14 @@
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav navbar-right">
             {% if user.is_authenticated %}
+              <li class="nav"><a href="{% url 'mess:messages_list' %}">Сообщения
+                {% if number_of_unread_messages %}
+                <span class="badge">
+                  {{ number_of_unread_messages }}
+                </span>
+                {% endif %}
+                </a>
+              </li>
               <li class="nav"><a href="{% url 'logout' %}">Выйти</a></li>
             {% else %}
               <li class="nav"><a href="{% url 'register' %}">Регистрация</a></li>
@@ -79,6 +87,17 @@
     </div>
     <div class="container">
       <footer class="footer">
+        <!--<script type="text/javascript" src="https://secure.skypeassets.com/i/scom/js/skype-uri.js"></script>-->
+        <!--<div id="SkypeButton_Call_romko.3313_1">-->
+           <!--<script type="text/javascript">-->
+           <!--Skype.ui({-->
+           <!--"name": "chat",-->
+           <!--"element": "SkypeButton_Call_romko.3313_1",-->
+           <!--"participants": ["romko.3313"],-->
+           <!--"imageColor": "black"-->
+           <!--});-->
+           <!--</script>-->
+        <!--</div>-->
         <p>&copy; 2016 Romko United, Inc.</p>
       </footer>
     </div>

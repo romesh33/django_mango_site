@@ -13,7 +13,13 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 
 from events.models import Event
+from mess.models import Message
 import logging
+
+
+def number_of_unread_messages(user):
+    return Message.objects.filter(to_user=user,was_read=False).count()
+
 
 def main(request):
     next_events_list = Event.objects.order_by('-start_time')
@@ -25,7 +31,8 @@ def main(request):
         # Do something for anonymous users.
         registered_event_list = 0
         pass
-    context = {"next_events_list": next_events_list, "registered_event_list": registered_event_list}
+    context = {"next_events_list": next_events_list, "registered_event_list": registered_event_list,
+               "number_of_unread_messages": number_of_unread_messages(user)}
     return render(request, 'main.html', context)
 
 

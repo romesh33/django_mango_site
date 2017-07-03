@@ -29,6 +29,7 @@ class MessageThread(models.Model):
     num_of_messages = models.IntegerField(default=0)
     num_of_users = models.IntegerField(default=0)
     last_message_id = models.IntegerField(default=0)
+    online_users = models.ManyToManyField(User, related_name="connected_users", default=None, null=True)
     objects = ThreadManager()
 
 
@@ -38,6 +39,7 @@ class Message(models.Model):
     thread = models.ForeignKey(MessageThread, null=True)
     text = models.TextField(max_length=2000, null=True, blank=True)
     creation_time = models.DateTimeField('creation time', auto_now=True)
+    was_read = models.BooleanField(default=False)
     #objects = MessageManager()
 
     def __str__(self):
@@ -46,6 +48,8 @@ class Message(models.Model):
         else:
             return "Message text is empty"
 
+    class Meta:
+        ordering = ["creation_time"]
 
 class ChatMessage(models.Model):
     sender = models.ForeignKey(User, related_name="sender")

@@ -14,11 +14,27 @@
         <h3>Список переписок пользователя</h3>
     </div>
     {% load staticfiles %}
-    {% if threads_to_display %}
+    {% if threads_last_messages %}
         <ul>
-        {% for thread in threads_to_display %}
-            <li>{{ thread.1|date:"D d M Y" }} {{ thread.1|time:"H:i" }}: {{ thread.0 }}:  {{ thread.2 }}
-                <a href="{% url 'mess:view_thread' thread.3 %}">Просмотреть</a>
+        {% for message in threads_last_messages %}
+            <li>
+                {% if message.1 %}
+                    <span class="label label-success">{{ message.1 }}</span>
+                {% endif %}
+                {{ message.0.creation_time|date:"D d M Y" }} {{ message.0.creation_time|time:"H:i" }}:
+                    {% if message.0.from_user == user %}
+                        вы
+                    {% else %}
+                        {{ message.0.from_user }}
+                    {% endif %}
+                    >
+                    {% if message.0.to_user == user %}
+                        вам
+                    {% else %}
+                        {{ message.0.to_user }}
+                    {% endif %}
+                    : {{ message.0.text }}
+                <a href="{% url 'mess:view_thread' message.0.thread.id %}">Просмотреть</a>
             </li>
         {% endfor %}
         </ul>

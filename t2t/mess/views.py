@@ -6,13 +6,15 @@ import logging
 from django.contrib.auth.decorators import login_required
 from .forms import NewMessageForm, ReplyMessageForm
 from .models import Message, MessageThread
+from t2t.views import number_of_unread_messages
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
 
 # Create your views here.
 @login_required()
 def view_messages_page(request):
-    return render(request, 'mess/messages_main.html', {})
+    user = request.user
+    return render(request, 'mess/messages_main.html', {"number_of_unread_messages": number_of_unread_messages(user)})
 
 
 @login_required()
@@ -31,6 +33,7 @@ def new_message_page(request):
             message = Message(from_user=user, to_user=to_user, text=text, thread=thread)
             message.save()
             thread.last_message_id = message.id
+            thread.save()
             #print(message)
             # thread = message.thread
             # print(thread)
@@ -42,7 +45,7 @@ def new_message_page(request):
     # These forms will be blank, ready for user input.
     else:
         new_message_form = NewMessageForm()
-        context = {"new_message_form": new_message_form}
+        context = {"new_message_form": new_message_form,"number_of_unread_messages": number_of_unread_messages(user)}
         return render(request, 'mess/new_message.html', context)
 
 
@@ -52,7 +55,12 @@ class UserMessages(generic.ListView):
     context_object_name = 'all_user_messages'
     def get_queryset(self):
         user = self.request.user
-        return Message.objects.filter(Q(to_user=user)|Q(from_user=user))
+        messages_list = Message.objects.filter(Q(to_user=user)|Q(from_user=user))
+        for message in messages_list.filter(to_user=user):
+            if (message.was_read == False):
+                message.was_read = True
+                message.save()
+        return messages_list
 
 
 @login_required()
@@ -70,6 +78,10 @@ def view_thread(request, thread_id):
     if thread_current.users.filter(username=user.username).exists():
         # если юзер хочет просмотреть переписку, в которой состоит - пожалуйста:
         messages = Message.objects.filter(thread=thread_current)
+        for message in messages:
+            if (message.was_read == False):
+                message.was_read = True
+                message.save()
         context = {"thread_messages": messages, "companion_name": companion_name}
     else:
         # если юзер хочет посмотреть переписку, в которой не состоит - получает фигу:
@@ -77,6 +89,7 @@ def view_thread(request, thread_id):
     reply_message_form = ReplyMessageForm()
     context["reply_message_form"] = reply_message_form
     context["thread_id"] = thread_id
+    context["number_of_unread_messages"] = number_of_unread_messages(user)
     return render(request, 'mess/thread_messages.html', context)
 
 
@@ -109,7 +122,7 @@ def reply_message(request, thread_id):
 @login_required()
 def show_threads(request):
     user = request.user
-    threads_to_display = []
+    threads_last_messages = []
     #Определям список тредов, в которых участвовал наш юзер:
     user_threads = MessageThread.objects.filter(users=user)
     #print(user_threads)
@@ -122,12 +135,17 @@ def show_threads(request):
                     companion = i
             last_message_id = user_thread.last_message_id
             last_message = Message.objects.get(id=last_message_id)
-            threads_to_display.append([companion.username,last_message.creation_time,last_message.text, user_thread.id])
+            # показывать имя компаньона только в том случае, если письмо адресовано текущему пользователю
+            threads_last_messages.append([last_message, number_of_thread_unread_messages(user_thread,to_user=user)])
             #users = users.exixts(user)
             #print(companion)
         else:
             # игнорируем треды, в которых больше двух юзеров - их мы не будем показывать
             pass
     #print(threads_to_display)
-    context = {"threads_to_display": threads_to_display}
+    context = {"threads_last_messages": threads_last_messages, "number_of_unread_messages": number_of_unread_messages(user)}
     return render(request, 'mess/user_threads.html', context)
+
+
+def number_of_thread_unread_messages(thread,to_user):
+    return Message.objects.filter(to_user=to_user,was_read=False,thread=thread).count()

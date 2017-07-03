@@ -196,7 +196,6 @@ var Chat = React.createClass({
             return (
                 <div>
                     <div className="chat_app" id="chat">
-                        <h1>This is chat!</h1>
                         <MessageTable messages={this.state.messages} onMessageDelete={this.handleMessageDelete}/>
                         {/* This is comment */}
                     </div>
@@ -209,7 +208,6 @@ var Chat = React.createClass({
             return (
                 <div>
                     <div className="chat_app" id="chat">
-                        <h1>This is chat!</h1>
                         <MessageTable messages={this.state.messages} onMessageDelete={this.handleMessageDelete}/>
                         {/* This is comment */}
                     </div>

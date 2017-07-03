@@ -9,6 +9,7 @@ from django.views.generic.edit import UpdateView
 from django.contrib.auth.models import User
 from t2t.forms import UserProfileForm
 from t2t.models import UserProfile
+from t2t.views import number_of_unread_messages
 from .forms import UserCabinetForm
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -22,7 +23,7 @@ def viewCabinet(request, user_id):
     except (ObjectDoesNotExist):
         userProfile = 0
         logging.error('ObjectDoesNotExist: There is no UserProfile for this user')
-    context = {"user": user, "userprofile": userProfile,}
+    context = {"user": user, "userprofile": userProfile,"number_of_unread_messages": number_of_unread_messages(user)}
     return render(request, 'cabinet/cabinet_main.html', context)
 
 @login_required()
@@ -94,6 +95,6 @@ def editProfile(request, user_id):
         user_form = UserCabinetForm(data)
         profile_form = UserProfileForm(data)
     context = {"user_form": user_form, "profile_form": profile_form, "show_unique_username_error":
-        show_unique_username_error}
+        show_unique_username_error,"number_of_unread_messages": number_of_unread_messages(user)}
     logging.warning(show_unique_username_error)
     return render(request, 'cabinet/cabinet_edit.html', context)

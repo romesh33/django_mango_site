@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+from django.utils.timezone import localtime
 import logging
 import json
 import simplejson
@@ -40,8 +41,9 @@ class EventDetailView(DetailView):
         for message in chat_messages:
             #messages_list.append({"text": message.text, "from": message.sender.username,
             #                     "time": message.creation_time.strftime("%s %s" % ("%a %d %b %Y", "%H:%M"))})
+            #TODO: need to convert time according to the user timezone. Or better to convert it in js?
             messages_dictionary[message.id] = {"text": message.text, "from": message.sender.username,
-            "time": message.creation_time.strftime("%s %s" % ("%a %d %b %Y", "%H:%M"))}
+            "time": localtime(message.creation_time).strftime("%s %s" % ("%a %d %b %Y", "%H:%M"))}
             print(messages_dictionary[message.id])
         #({"message_text": message_text,"from_user": from_user.username,
         #context['messages'] = simplejson.dumps(messages_list)

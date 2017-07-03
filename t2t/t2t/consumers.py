@@ -17,13 +17,18 @@ log = logging.getLogger(__name__)
 def ws_connect(message):
     event_id = 0
     try:
+        # случай, когда пользователь подключился к личному чату:
         thread_id = message['path'].strip('/').split('/')[3]
+        thread = MessageThread.objects.get(id=thread_id)
+        thread.online_users.add(message.user)
+        thread.save()
         group_name = 'chat-'+thread_id
-        print("Group name:" + group_name)
+        print("User connected to private message group:" + group_name)
         Group(group_name, channel_layer=message.channel_layer).add(message.reply_channel)
     except ValueError:
         return
     except IndexError:
+        # случай, когда пользователь подключился к чату события:
         event_id = message['path'].strip('/').split('/')[2]
         # set event variable with current event - to update online_chat_users for it:
         event = Event.objects.get(id=event_id)
@@ -71,14 +76,20 @@ def ws_disconnect(message):
     #print(message.reply_channel)
     #print(message.user)
     try:
+        # случай, когда пользователь отключился от личного чата:
         thread_id = message['path'].strip('/').split('/')[3]
         #     label = message.channel_session['room']
         #     room = Room.objects.get(label=label)
+        thread = MessageThread.objects.get(id=thread_id)
+        thread.online_users.remove(message.user)
+        thread.save()
         group_name = 'chat-'+thread_id
+        print("User disconnected from private message group:" + group_name)
         Group(group_name, channel_layer=message.channel_layer).discard(message.reply_channel)
     except (KeyError):
         pass
     except IndexError:
+        # случай, когда пользователь отключился от чата события:
         event_id = message['path'].strip('/').split('/')[2]
         #print(event_id)
         event = Event.objects.get(id=event_id)
@@ -118,6 +129,8 @@ def send_personal_message(message, thread_id):
             to_user = u
     thread = MessageThread.objects.get_or_create_thread(from_user=from_user, to_user=to_user)
     new_message = Message(from_user=from_user, to_user=to_user, text=message_text, thread=thread)
+    if to_user in thread.online_users.all():
+        new_message.was_read = True
     new_message.save()
     thread.last_message_id = new_message.id
     thread.save()
